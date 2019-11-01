@@ -23,6 +23,7 @@ void on_center_button() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
+
 	pros::lcd::initialize();
 	pros::lcd::set_text(1, "Hello PROS User!");
 
@@ -60,6 +61,8 @@ void competition_initialize() {}
  */
 void autonomous() {}
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmissing-noreturn"
 /**
  * Runs the operator control code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -75,18 +78,27 @@ void autonomous() {}
  */
 void opcontrol() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
-	pros::Motor left_mtr(1);
-	pros::Motor right_mtr(2);
+	pros::Motor left_mtr_1(2);
+	pros::Motor left_mtr_2(4);
+	pros::Motor right_mtr_1(3);
+	pros::Motor right_mtr_2(5);
+    master.rumble("... --- ...");
 
-	while (true) {
+
+    while (true) {
 		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
 		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
 		int left = master.get_analog(ANALOG_LEFT_Y);
 		int right = master.get_analog(ANALOG_RIGHT_Y);
 
-		left_mtr = left;
-		right_mtr = right;
+		left_mtr_1 = left;
+		right_mtr_2 = right;
+		right_mtr_1 = right;
+		left_mtr_2 = left;
 		pros::delay(20);
+
 	}
 }
+#pragma clang diagnostic pop
+
