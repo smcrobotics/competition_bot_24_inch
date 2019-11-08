@@ -85,15 +85,27 @@ void opcontrol() {
   pros::Motor claw (CLAW_PORT, MOTOR_GEARSET_36);
   pros::Controller master (CONTROLLER_MASTER);
 
-  arm.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-  claw.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+  arm.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  claw.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+
+
 
   while (true) {
-    left_wheels.move(master.get_analog(ANALOG_LEFT_Y));
-    right_wheels.move(master.get_analog(ANALOG_RIGHT_Y));
+    /**
+     * This will do tank drive
+     */
+    // left_wheels.move(master.get_analog(ANALOG_LEFT_Y));
+    // right_wheels.move(master.get_analog(ANALOG_RIGHT_Y));
+
+    int power = master.get_analog(ANALOG_RIGHT_Y);
+    int turn = master.get_analog(ANALOG_LEFT_X);
+    int left = power + turn;
+    int right = power - turn;
+    left_wheels.move(left);
+    right_wheels.move(right);
 
     if (master.get_digital(DIGITAL_R1)) {
-      arm.move_velocity(100); // This is 100 because it's a 100rpm motor
+      arm.move_velocity(10); // This is 100 because it's a 100rpm motor
     }
     else if (master.get_digital(DIGITAL_R2)) {
       arm.move_velocity(-100);
