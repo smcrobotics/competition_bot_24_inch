@@ -29,7 +29,7 @@ void initialize() {
 	pros::lcd::register_btn1_cb(on_center_button);
 
   // TODO: test that all this stuff works
-  drive::init()
+  drive::init();
 
   // ChassisControllerIntegrated drive = xDriveModel(itopLeftMotor,
   //             itopRightMotor,
