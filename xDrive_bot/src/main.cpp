@@ -27,6 +27,20 @@ void initialize() {
 	pros::lcd::set_text(1, "Hello PROS User!");
 
 	pros::lcd::register_btn1_cb(on_center_button);
+
+  // TODO: test that all this stuff works
+  drive::init();
+
+  // ChassisControllerIntegrated drive = xDriveModel(itopLeftMotor,
+  //             itopRightMotor,
+  //             ibottomRightMotor,
+  //             ibottomLeftMotor,
+  //             imaxVelocity,
+  //             imaxVoltage = 12000);
+
+  // these constants are found in robot.h
+  // TODO: put this stuff into the initialize() function
+  
 }
 
 /**
@@ -73,44 +87,17 @@ void autonomous() {}
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
-#define BACK_LEFT_WHEELS_PORT 1
-#define BACK_RIGHT_WHEELS_PORT 2
-#define FRONT_LEFT_WHEELS_PORT 3
-#define FRONT_RIGHT_WHEELS_PORT 4
 
 
 void opcontrol() {
-  pros::Motor back_left_wheels (BACK_LEFT_WHEELS_PORT);
-  // can invert motors by passing boolean
-  pros::Motor back_right_wheels (BACK_RIGHT_WHEELS_PORT, true);
-  pros::Motor front_left_wheels (FRONT_LEFT_WHEELS_PORT);
-  pros::Motor front_right_wheels (FRONT_RIGHT_WHEELS_PORT, true);
   pros::Controller master (CONTROLLER_MASTER);
 
-  // double maxVelocity = 100;
-
-  // pros::ChassisController xModel = okapi::ChassisModelFactory::create(
-  // 					front_left_motor,
-  // 					front_right_wheels,
-  // 					back_right_wheels,
-  // 					back_left_wheels,
-  // 					maxVelocity);
-
-  // left x (rotation)
-  double channel_4;
-  // right y
-  double channel_2;
-  // left y
-  double channel_1;
-
   while (true) {
-  	channel_4 = master.get_analog(ANALOG_LEFT_X);
-  	channel_2 = master.get_analog(ANALOG_RIGHT_Y);
-  	channel_1 = master.get_analog(ANALOG_RIGHT_X);
-    front_left_wheels.move(channel_2 + channel_1 + channel_4);
-    back_left_wheels.move(channel_2 - channel_1 + channel_4);
-    front_right_wheels.move(-channel_2 + channel_1 + channel_4);
-    back_right_wheels.move(-channel_2 - channel_1 + channel_4);
+  	drive::opControl(
+      master.get_analog(ANALOG_RIGHT_X),
+      master.get_analog(ANALOG_RIGHT_Y),
+      master.get_analog(ANALOG_LEFT_X)
+    );
 
     pros::delay(2);
   }
