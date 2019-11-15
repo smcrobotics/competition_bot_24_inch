@@ -5,4 +5,3 @@
 * [implementing PID control 2](http://www.aura.org.nz/archives/1869)
 * [example robot code](https://github.com/ThePinkAlliance/PizzaBot2019)
 * [Purdue sample code](https://github.com/purduesigbots/forkner-public)
-* [position tracking](https://pos.tixo.ca)
