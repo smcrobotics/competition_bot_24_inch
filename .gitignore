@@ -21,3 +21,7 @@ cmake-build-debug/
 
 # OSX
 .DS_Store
+
+# floobits
+.floo
+.flooignore

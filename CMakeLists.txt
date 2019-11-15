@@ -259,4 +259,4 @@ add_executable(robot_code
         include/pros/vision.hpp
         include/api.h
         include/main.h
-        src/main.cpp)
+        src/main.cpp include/constants.h include/tasks.h src/tasks.cpp)
