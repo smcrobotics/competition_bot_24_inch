@@ -1,5 +1,6 @@
 #include "main.h"
 #include "constants.h"
+#include "tasks.h"
 
 using namespace okapi;
 
@@ -31,8 +32,6 @@ void initialize() {
     pros::lcd::set_text(1, "Hello PROS User!");
 
     pros::lcd::register_btn1_cb(on_center_button);
-    autonomous();
-
 }
 
 /**
@@ -69,6 +68,9 @@ void autonomous() {
     Motor m2(RIGHT_MOTOR_PORT);
     m1.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
     m2.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+
+    int timeout = 10;
+    pros::Task myTask(intake_task_fn, (void*) timeout, "My Task");
 
     auto myChassis = ChassisControllerFactory::createPtr(
             m1, // Left motors
@@ -115,7 +117,7 @@ void opcontrol() {
     pros::Motor intake_2(INTAKE_MOTOR_PORT_RIGHT);
     pros::Controller master(pros::E_CONTROLLER_MASTER);
 
-    double intakeVel;
+    double intakeVel = 0;
     double rightX;
     double rightY;
     double leftX;
@@ -143,7 +145,12 @@ void opcontrol() {
             chassisPtr->right(leftX);
         }
 
-        intakeVel = master.get_digital(INTAKE_TOGGLE_BUTTON) * MOTOR_MOVE_MAX;
+        if (master.get_digital(INTAKE_BUTTON))
+            intakeVel = MOTOR_MOVE_MAX;
+        else if (master.get_digital(OUTTAKE_BUTTON))
+            intakeVel = -MOTOR_MOVE_MAX;
+        else
+            intakeVel = 0;
 
         intake_1.move(intakeVel);
         intake_2.move(intakeVel);

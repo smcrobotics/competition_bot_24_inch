@@ -17,7 +17,8 @@
 
 #define INTAKE_MOTOR_PORT_LEFT 3 ///TODO: Change to actual value
 #define INTAKE_MOTOR_PORT_RIGHT -4 ///TODO: Change to actual value
-#define INTAKE_TOGGLE_BUTTON pros::E_CONTROLLER_DIGITAL_A ///TODO: Change to actual value
+#define INTAKE_BUTTON pros::E_CONTROLLER_DIGITAL_A ///TODO: Change to actual value
+#define OUTTAKE_BUTTON pros::E_CONTROLLER_DIGITAL_B
 
 #define AUTO_DEBUG 0
 
