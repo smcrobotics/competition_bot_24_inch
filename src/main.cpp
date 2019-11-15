@@ -1,13 +1,7 @@
 #include "main.h"
-
-#define LEFT_MOTOR_PORT 1
-#define RIGHT_MOTOR_PORT -2
-#define ARM_PORT 8
-#define CLAW_PORT 3
+#include "constants.h"
 
 using namespace okapi;
-using std::cout;
-using std::endl;
 
 
 /**
@@ -116,50 +110,44 @@ void autonomous() {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 void opcontrol() {
-    auto chassisPtr = ChassisControllerFactory::createPtr(LEFT_MOTOR_PORT, RIGHT_MOTOR_PORT);
-    cout << "Chassis controller set up" << endl;
+    std::shared_ptr<ChassisControllerIntegrated> chassisPtr = ChassisControllerFactory::createPtr(LEFT_MOTOR_PORT, RIGHT_MOTOR_PORT);
+    pros::Motor intake_1(INTAKE_MOTOR_PORT_LEFT);
+    pros::Motor intake_2(INTAKE_MOTOR_PORT_RIGHT);
+    pros::Controller master(pros::E_CONTROLLER_MASTER);
 
-    pros::Motor arm (ARM_PORT, MOTOR_GEARSET_36); // The arm motor has the 100rpm (red) gearset
-    pros::Motor claw (CLAW_PORT, MOTOR_GEARSET_36);
-    pros::Controller master (CONTROLLER_MASTER);
+    double intakeVel;
+    double rightX;
+    double rightY;
+    double leftX;
+    double leftY;
 
-    arm.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-    claw.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-
-    while (true) {
-        /**
-         * This will do tank drive
-         */
-        // left_wheels.move(master.get_analog(ANALOG_LEFT_Y));
-        // right_wheels.move(master.get_analog(ANALOG_RIGHT_Y));
-
-        int power = master.get_analog(ANALOG_RIGHT_Y);
-        int turn = master.get_analog(ANALOG_LEFT_Y);
-        chassisPtr->tank(power, turn);
-
-        if (master.get_digital(DIGITAL_R1)) {
-            arm.move_velocity(10); // This is 100 because it's a 100rpm motor
-            std::cerr << "asdfadsf" << endl;
-            std::cout << "bljnadslfn" << endl;
-        }
-        else if (master.get_digital(DIGITAL_R2)) {
-            arm.move_velocity(-100);
-        }
-        else {
-            arm.move_velocity(0);
-        }
-
-        if (master.get_digital(DIGITAL_L1)) {
-            claw.move_velocity(100);
-        }
-        else if (master.get_digital(DIGITAL_L2)) {
-            claw.move_velocity(-100);
-        }
-        else {
-            claw.move_velocity(0);
-        }
-
-        pros::delay(2);
+#if (AUTO_DEBUG == 1)
+    bool should_continue = true;
+    while (should_continue) {
+        if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A))
+            autonomous();
+        else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B))
+            should_continue = false;
     }
+#else
+    while (true) {
+        rightX = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X) / 127.0;
+        rightY = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) / 127.0;
+        leftX = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X) / 127.0;
+        leftY = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 127.0;
+
+        if (rightX != 0 || rightY != 0)
+            chassisPtr->arcade(rightY, rightX);
+        else {
+            chassisPtr->forward(leftY);
+            chassisPtr->right(leftX);
+        }
+
+        intakeVel = master.get_digital(INTAKE_TOGGLE_BUTTON) * MOTOR_MOVE_MAX;
+
+        intake_1.move(intakeVel);
+        intake_2.move(intakeVel);
+    }
+#endif
 }
 #pragma clang diagnostic pop

@@ -8,10 +8,10 @@
 #define ROBOT_CODE_TASKS_H
 
 void intake_task_fn(void* p) {
-    intakeVel = master.get_digital(INTAKE_TOGGLE_BUTTON) * MOTOR_MOVE_MAX;
-
-    intake_1.move(intakeVel);
-    intake_2.move(intakeVel);
+    mutex_take(mutex, timeout);
+    //have timer for duration
+    //dont allow other processes to do stuff until this is done
+    //
 }
 
 #endif //ROBOT_CODE_TASKS_H
