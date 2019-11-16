@@ -1,4 +1,5 @@
 # robot-code
+SMC Robotics Club 2019 Robot Code - work in progress
 ## RESOURCES
 * [Purdue PROS](https://pros.cs.purdue.edu/v5/getting-started/index.html)
 * [implementing PID control](https://www.youtube.com/watch?v=xckRiWAuo4E&list=PLCozfyh08FMgbZWeTbGOMw7o3biDlnvec)
