@@ -15,10 +15,12 @@
 #define TRAY_IN true
 #define TRAY_OUT false
 
-#define INTAKE_MOTOR_PORT_LEFT 3 ///TODO: Change to actual value
-#define INTAKE_MOTOR_PORT_RIGHT -4 ///TODO: Change to actual value
-#define INTAKE_BUTTON pros::E_CONTROLLER_DIGITAL_A ///TODO: Change to actual value
+#define INTAKE_MOTOR_PORT_LEFT 3 ///TODO: Change to intake motor left to actual value
+#define INTAKE_MOTOR_PORT_RIGHT -4 ///TODO: Change intake motor right to actual value
+#define INTAKE_BUTTON pros::E_CONTROLLER_DIGITAL_A ///TODO: Change intake button to actual value
 #define OUTTAKE_BUTTON pros::E_CONTROLLER_DIGITAL_B
+
+#define INTAKE_POSITION_MOTOR_PORT 5 /// TODO: Change intake position motor to actual port
 
 #define AUTO_DEBUG 0
 
