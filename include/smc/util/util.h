@@ -8,6 +8,9 @@
 #include <api.h>
 #include <memory>
 
-std::unique_ptr<pros::Motor> initMotor(int port);
+namespace util {
+    // helper function to create motor and set brake mode
+    std::unique_ptr<pros::Motor> initMotor(int port);
+}
 
 #endif //ROBOT_CODE_UTIL_H

@@ -10,7 +10,7 @@
 namespace intake {
     void init();
 
-    void moveToPosition();
+    void moveArmsToPosition();
 }
 
 #endif //ROBOT_CODE_INTAKE_H
