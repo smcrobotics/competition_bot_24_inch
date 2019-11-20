@@ -141,7 +141,7 @@ void opcontrol() {
         if (rightX != 0 || rightY != 0)
             chassisPtr->arcade(rightY, rightX);
         else {
-            chassisPtr->forward(leftY);
+            chassisPtr->forward(leftY); /// TODO: Make this less sensitive (i.e. slower) than right stick analog
             chassisPtr->right(leftX);
         }
 

@@ -9,7 +9,16 @@
 
 void intake_task_fn(void* timeout_ptr) {
     int * timeoutPtr = static_cast<int*>(timeout_ptr);
+    auto motor1 = pros::Motor(INTAKE_MOTOR_PORT_LEFT);
+    auto motor2 = pros::Motor(INTAKE_MOTOR_PORT_RIGHT);
 
+    motor1.move(MOTOR_MOVE_MAX);
+    motor2.move(MOTOR_MOVE_MAX);
+
+    pros::delay(*timeoutPtr);
+
+    motor1.move(0);
+    motor2.move(0);
 }
 
 const double liftkP = 1.0; /// TODO: Replace these values with actual tuned PID loop values
