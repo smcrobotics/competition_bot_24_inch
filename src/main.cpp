@@ -64,8 +64,8 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-    Motor m1(LEFT_MOTOR_PORT);
-    Motor m2(RIGHT_MOTOR_PORT);
+    Motor m1(robot::LEFT_MOTOR_PORT);
+    Motor m2(robot::RIGHT_MOTOR_PORT);
     m1.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
     m2.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 
@@ -112,9 +112,10 @@ void autonomous() {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 void opcontrol() {
-    std::shared_ptr<ChassisControllerIntegrated> chassisPtr = ChassisControllerFactory::createPtr(LEFT_MOTOR_PORT, RIGHT_MOTOR_PORT);
-    pros::Motor intake_1(INTAKE_MOTOR_PORT_LEFT);
-    pros::Motor intake_2(INTAKE_MOTOR_PORT_RIGHT);
+    std::shared_ptr<ChassisControllerIntegrated> chassisPtr =
+            ChassisControllerFactory::createPtr(robot::LEFT_MOTOR_PORT, robot::RIGHT_MOTOR_PORT);
+    pros::Motor intake_1(robot::INTAKE_MOTOR_PORT_LEFT);
+    pros::Motor intake_2(robot::INTAKE_MOTOR_PORT_RIGHT);
     pros::Controller master(pros::E_CONTROLLER_MASTER);
 
     double intakeVel = 0;
@@ -145,10 +146,10 @@ void opcontrol() {
             chassisPtr->right(leftX);
         }
 
-        if (master.get_digital(INTAKE_BUTTON))
-            intakeVel = MOTOR_MOVE_MAX;
-        else if (master.get_digital(OUTTAKE_BUTTON))
-            intakeVel = -MOTOR_MOVE_MAX;
+        if (master.get_digital(bindings::INTAKE_BUTTON))
+            intakeVel = constants::MOTOR_MOVE_MAX;
+        else if (master.get_digital(bindings::OUTTAKE_BUTTON))
+            intakeVel = -constants::MOTOR_MOVE_MAX;
         else
             intakeVel = 0;
 

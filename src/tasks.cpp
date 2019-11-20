@@ -9,8 +9,8 @@
 
 void intake_task_fn(void* timeout_ptr) {
     int * timeoutPtr = static_cast<int*>(timeout_ptr);
-    auto motor1 = pros::Motor(INTAKE_MOTOR_PORT_LEFT);
-    auto motor2 = pros::Motor(INTAKE_MOTOR_PORT_RIGHT);
+    auto motor1 = pros::Motor(robot::INTAKE_MOTOR_PORT_LEFT);
+    auto motor2 = pros::Motor(robot::INTAKE_MOTOR_PORT_RIGHT);
 
     motor1.move(MOTOR_MOVE_MAX);
     motor2.move(MOTOR_MOVE_MAX);
