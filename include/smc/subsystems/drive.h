@@ -15,7 +15,7 @@
 #ifndef _DRIVE_H_
 #define _DRIVE_H_
 
-#include "main.h"
+#include "drive.h"
 
 namespace drive {
     /**
