@@ -11,7 +11,7 @@
 #ifndef _ROBOT_H
 #define _ROBOT_H
 
-#include "intake.h"
-#include "tray.h"
+#include "subsystems/intake.h"
+#include "subsystems/tray.h"
 
 #endif
