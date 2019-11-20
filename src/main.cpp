@@ -1,5 +1,5 @@
 #include "main.h"
-#include "smc/constants.h"
+#include "smc/util/constants.h"
 #include "smc/tasks.h"
 
 using namespace okapi;

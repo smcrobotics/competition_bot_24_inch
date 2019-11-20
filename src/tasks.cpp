@@ -5,7 +5,7 @@
 #include "api.h"
 #include "okapi/api.hpp"
 
-#include "smc/constants.h"
+#include "smc/util/constants.h"
 
 void intake_task_fn(void* timeout_ptr) {
     int * timeoutPtr = static_cast<int*>(timeout_ptr);

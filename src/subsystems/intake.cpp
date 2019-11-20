@@ -2,7 +2,7 @@
 // Created by ariel on 11/19/19.
 //
 #include "subsystems/intake.h"
-#include "smc/constants.h"
+#include "smc/util/constants.h"
 
 
 namespace intake {
