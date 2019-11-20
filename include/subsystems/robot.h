@@ -1,0 +1,19 @@
+/**
+ * robot.h
+ *
+ * Contains motor ports and other robot related definitions
+ * used for this robot (competition bot #1).
+ *
+ * Copyright (c) 2019-2020, SMC Robotics Club.
+ * All rights reserved.
+ */
+
+#ifndef _ROBOT_H
+#define _ROBOT_H
+
+#define BACK_LEFT_WHEELS_PORT 1
+#define BACK_RIGHT_WHEELS_PORT 2
+#define FRONT_LEFT_WHEELS_PORT 9
+#define FRONT_RIGHT_WHEELS_PORT 10
+
+#endif
