@@ -4,7 +4,6 @@
 
 using namespace okapi;
 
-
 /**
  * A callback function for LLEMU's center button.
  *
