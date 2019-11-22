@@ -6,7 +6,7 @@
 
 #include "main.h"
 
-#define AUTO_DEBUG 0
+#define DEBUG_MODE 0
 
 namespace robot {
     const bool TRAY_IN = true;
@@ -15,10 +15,14 @@ namespace robot {
     const int LEFT_MOTOR_PORT = 1;
     const int RIGHT_MOTOR_PORT = -2;
 
-    const int INTAKE_MOTOR_PORT_LEFT = 3; ///TODO: Change to intake motor left to actual value
-    const int INTAKE_MOTOR_PORT_RIGHT = -4; ///TODO: Change intake motor right to actual value
+    const int INTAKE_MOTOR_PORT_LEFT = 3; /// TODO: Change to intake motor left to actual value
+    const int INTAKE_MOTOR_PORT_RIGHT = -4; /// TODO: Change intake motor right to actual value
+    const int INTAKE_FLIP_PORT = 5;
 
     const int INTAKE_POSITION_MOTOR_PORT = 5; /// TODO: Change intake position motor to actual port
+
+    std::shared_ptr<okapi::ChassisControllerIntegrated> chassis;
+    std::shared_ptr<okapi::AsyncMotionProfileController> profile_controller;
 }
 
 namespace bindings {

@@ -28,10 +28,26 @@ void on_center_button() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-    pros::lcd::initialize();
-    pros::lcd::set_text(1, "Hello PROS User!");
+    robot::chassis = ChassisControllerFactory::createPtr(
+            okapi::MotorGroup{robot::RIGHT_MOTOR_PORT}, // Left motors
+            okapi::MotorGroup{robot::LEFT_MOTOR_PORT},   // Right motors
+            AbstractMotor::gearset::green, // Torque gearset
+            {4_in, 12.5_in} // 4 inch wheels, 12.5 inch wheelbase width
+    );
+    robot::chassis->setBrakeMode(okapi::Motor::brakeMode::brake);
 
-    pros::lcd::register_btn1_cb(on_center_button);
+    robot::profile_controller = std::make_shared<AsyncMotionProfileController>(TimeUtilFactory::create(),
+            1.0, 0.5, 1.5,
+            robot::chassis->getChassisModel(),
+            robot::chassis->getChassisScales(),
+            robot::chassis->getGearsetRatioPair()
+    );
+
+    robot::profile_controller->generatePath({
+        Point{0_ft, 0_ft, 0_deg},
+        Point{49_in, -59_in, 90_deg}},
+                "A" // Profile name
+    );
 }
 
 /**
@@ -70,29 +86,10 @@ void autonomous() {
     m2.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 
     int timeout = 10;
-    pros::Task myTask(intake_task_fn, (void*) timeout, "My Task");
+    pros::Task myTask(intake_task_fn, (void*) &timeout, "My Task");
 
-    auto myChassis = ChassisControllerFactory::createPtr(
-            m1, // Left motors
-            m2,   // Right motors
-            AbstractMotor::gearset::green, // Torque gearset
-            {4_in, 12.5_in} // 4 inch wheels, 12.5 inch wheelbase width
-    );
-
-    auto profileController = AsyncControllerFactory::motionProfile(
-            1.0,  // Maximum linear velocity of the Chassis in m/s
-            0.5,  // Maximum linear acceleration of the Chassis in m/s/s
-            1.5, // Maximum linear jerk of the Chassis in m/s/s/s
-            *myChassis // Chassis Controller
-    );
-    profileController.generatePath({
-        Point{0_ft, 0_ft, 0_deg},
-        Point{49_in, -59_in, 90_deg}},
-                "A" // Profile name
-    );
-
-    profileController.setTarget("A");
-    profileController.waitUntilSettled();
+    robot::profile_controller->setTarget("A");
+    robot::profile_controller->waitUntilSettled();
 }
 
 /**
