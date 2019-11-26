@@ -4,6 +4,12 @@
 
 using namespace okapi;
 
+/// Begin forward declaration block
+std::shared_ptr<okapi::AsyncMotionProfileController> robot::profile_controller;
+std::shared_ptr<okapi::ChassisControllerIntegrated> robot::chassis;
+/// End forward declaration block
+
+
 /**
  * A callback function for LLEMU's center button.
  *
@@ -27,6 +33,19 @@ void on_center_button() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
+    robot::chassis = ChassisControllerFactory::createPtr(
+            okapi::MotorGroup{robot::RIGHT_MOTOR_PORT},
+            okapi::MotorGroup{robot::LEFT_MOTOR_PORT},
+            AbstractMotor::gearset::green, {4_in, 12.5_in}
+    );
+    robot::profile_controller = std::make_shared<AsyncMotionProfileController>(
+            TimeUtilFactory::create(),
+            1.0, 0.5, 1.5,
+            robot::chassis->getChassisModel(),
+            robot::chassis->getChassisScales(),
+            robot::chassis->getGearsetRatioPair()
+    );
+
     robot::chassis->setBrakeMode(okapi::Motor::brakeMode::brake);
     robot::profile_controller->generatePath({
         Point{0_ft, 0_ft, 0_deg},
@@ -65,12 +84,8 @@ void competition_initialize() {}
  * from where it left off.
  */
 
-void autonomous() {
-//    if (robot::profile_controller == nullptr)
-//        robot::profile_controller = nullptr;
-//    if (robot::chassis == nullptr)
-//        robot::profile_controller = nullptr;
 
+void autonomous() {
     Motor m1(robot::LEFT_MOTOR_PORT);
     Motor m2(robot::RIGHT_MOTOR_PORT);
     m1.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
@@ -78,6 +93,8 @@ void autonomous() {
 
     int timeout = 10;
     pros::Task myTask(intake_task_fn, (void*) &timeout, "My Task");
+
+
 
     robot::profile_controller->setTarget("A");
     robot::profile_controller->waitUntilSettled();
