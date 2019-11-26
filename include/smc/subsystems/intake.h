@@ -11,6 +11,8 @@ namespace intake {
     void init();
 
     void moveArmsToPosition();
+
+    enum Position { UP, DOWN };
 }
 
 #endif //ROBOT_CODE_INTAKE_H

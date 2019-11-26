@@ -27,21 +27,7 @@ void on_center_button() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-    robot::chassis = ChassisControllerFactory::createPtr(
-            okapi::MotorGroup{robot::RIGHT_MOTOR_PORT}, // Left motors
-            okapi::MotorGroup{robot::LEFT_MOTOR_PORT},   // Right motors
-            AbstractMotor::gearset::green, // Torque gearset
-            {4_in, 12.5_in} // 4 inch wheels, 12.5 inch wheelbase width
-    );
     robot::chassis->setBrakeMode(okapi::Motor::brakeMode::brake);
-
-    robot::profile_controller = std::make_shared<AsyncMotionProfileController>(TimeUtilFactory::create(),
-            1.0, 0.5, 1.5,
-            robot::chassis->getChassisModel(),
-            robot::chassis->getChassisScales(),
-            robot::chassis->getGearsetRatioPair()
-    );
-
     robot::profile_controller->generatePath({
         Point{0_ft, 0_ft, 0_deg},
         Point{49_in, -59_in, 90_deg}},
@@ -78,7 +64,13 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
+
 void autonomous() {
+//    if (robot::profile_controller == nullptr)
+//        robot::profile_controller = nullptr;
+//    if (robot::chassis == nullptr)
+//        robot::profile_controller = nullptr;
+
     Motor m1(robot::LEFT_MOTOR_PORT);
     Motor m2(robot::RIGHT_MOTOR_PORT);
     m1.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);

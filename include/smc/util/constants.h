@@ -5,9 +5,11 @@
 #define ROBOT_CODE_CONSTANTS_H
 
 #include "main.h"
+#include "okapi/api.hpp"
 
 #define DEBUG_MODE 0
 
+using namespace okapi;
 namespace robot {
     const bool TRAY_IN = true;
     const bool TRAY_OUT = false;
@@ -21,8 +23,19 @@ namespace robot {
 
     const int INTAKE_POSITION_MOTOR_PORT = 5; /// TODO: Change intake position motor to actual port
 
-    std::shared_ptr<okapi::ChassisControllerIntegrated> chassis;
-    std::shared_ptr<okapi::AsyncMotionProfileController> profile_controller;
+    std::shared_ptr<okapi::ChassisControllerIntegrated> chassis = ChassisControllerFactory::createPtr(
+            okapi::MotorGroup{robot::RIGHT_MOTOR_PORT},
+            okapi::MotorGroup{robot::LEFT_MOTOR_PORT},
+            AbstractMotor::gearset::green, {4_in, 12.5_in}
+    );
+
+    std::shared_ptr<okapi::AsyncMotionProfileController> profile_controller = std::make_shared<AsyncMotionProfileController>(
+            TimeUtilFactory::create(),
+            1.0, 0.5, 1.5,
+            robot::chassis->getChassisModel(),
+            robot::chassis->getChassisScales(),
+            robot::chassis->getGearsetRatioPair()
+    );
 }
 
 namespace bindings {

@@ -1,6 +1,8 @@
 #include "main.h"
 
 #include "smc/subsystems/drive.h"
+#include "smc/util/util.h"
+#include "smc/util/constants.h"
 
 using namespace okapi;
 
@@ -9,12 +11,12 @@ namespace drive {
     std::unique_ptr<pros::Motor> back_right_wheels;
 
     void init() {
-        drive::back_left_wheels = util::initMotor(robot::BACK_LEFT_WHEELS_PORT);
-        drive::back_right_wheels = util::initMotor(BACK_RIGHT_WHEELS_PORT);
+        drive::back_left_wheels = util::initMotor(robot::LEFT_MOTOR_PORT);
+        drive::back_right_wheels = util::initMotor(robot::RIGHT_MOTOR_PORT);
     }
 
     void opControl(double left, double right) {
-        drive::back_left_wheels->move(left_y);
-        drive::back_right_wheels->move(right_y);
+        drive::back_left_wheels->move(left);
+        drive::back_right_wheels->move(right);
     }
 }
