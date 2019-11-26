@@ -259,4 +259,4 @@ add_executable(robot_code
         include/pros/vision.hpp
         include/api.h
         include/main.h
-        src/main.cpp src/subsystems/drive.cpp src/subsystems/intake.cpp src/subsystems/tray.cpp include/smc/robot.h include/smc/tasks.h include/smc/util/constants.h include/smc/util/util.h include/smc/subsystems/drive.h include/smc/subsystems/intake.h include/smc/subsystems/tray.h src/util/util.cpp)
+        src/main.cpp src/subsystems/drive.cpp src/subsystems/intake.cpp src/subsystems/tray.cpp include/smc/robot.h include/smc/tasks.h include/smc/util/constants.h include/smc/util/util.h include/smc/subsystems/drive.h include/smc/subsystems/intake.h include/smc/subsystems/tray.h src/util/util.cpp src/tasks.cpp)
