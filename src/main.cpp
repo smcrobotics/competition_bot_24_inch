@@ -86,15 +86,8 @@ void competition_initialize() {}
 
 
 void autonomous() {
-    Motor m1(robot::LEFT_MOTOR_PORT);
-    Motor m2(robot::RIGHT_MOTOR_PORT);
-    m1.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-    m2.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-
     int timeout = 10;
     pros::Task myTask(intake_task_fn, (void*) &timeout, "My Task");
-
-
 
     robot::profile_controller->setTarget("A");
     robot::profile_controller->waitUntilSettled();
