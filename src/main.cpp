@@ -35,8 +35,8 @@ void on_center_button() {
  */
 void initialize() {
     robot::chassis = ChassisControllerFactory::createPtr(
-            okapi::MotorGroup{robot::RIGHT_MOTOR_PORT},
-            okapi::MotorGroup{robot::LEFT_MOTOR_PORT},
+            okapi::MotorGroup{1, 2},
+            okapi::MotorGroup{-3, -4},
             AbstractMotor::gearset::green, {4_in, 12.5_in}
     );
     robot::profile_controller = std::make_shared<AsyncMotionProfileController>(
@@ -47,7 +47,7 @@ void initialize() {
             robot::chassis->getGearsetRatioPair()
     );
 
-    robot::chassis->setBrakeMode(okapi::Motor::brakeMode::brake);
+//    robot::chassis->setBrakeMode(okapi::Motor::brakeMode::brake);
     robot::profile_controller->generatePath({
         Point{0_ft, 0_ft, 0_deg},
         Point{49_in, -59_in, 90_deg}},
@@ -107,7 +107,6 @@ void autonomous() {
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
-
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 void opcontrol() {
@@ -116,6 +115,7 @@ void opcontrol() {
     pros::Controller master(pros::E_CONTROLLER_MASTER);
 
     double intakeVel = 0;
+    bool isBrake = false;
 
 #if (AUTO_DEBUG == 1)
     bool should_continue = true;
@@ -128,6 +128,10 @@ void opcontrol() {
 #else
     while (true) {
         drive::opControl(master);
+
+        if (master.get_digital(bindings::DRIVE_BRAKE_TOGGLE))
+            isBrake = !isBrake;
+        robot::chassis->setBrakeMode(isBrake ? constants::OKAPI_BRAKE : constants::OKAPI_COAST);
 
         if (master.get_digital(bindings::INTAKE_BUTTON))
             intakeVel = constants::MOTOR_MOVE_MAX;

@@ -21,6 +21,9 @@ namespace robot {
     const int INTAKE_MOTOR_PORT_RIGHT = -4; /// TODO: Change intake motor right to actual value
     const int INTAKE_FLIP_PORT = 5;
 
+    const int INTAKE_DOWN_POS = -600;
+    const int INTAKE_UP_POS = 600;
+
     const int INTAKE_POSITION_MOTOR_PORT = 5; /// TODO: Change intake position motor to actual port
 
     extern std::shared_ptr<okapi::ChassisControllerIntegrated> chassis;
@@ -30,10 +33,15 @@ namespace robot {
 namespace bindings {
     const auto INTAKE_BUTTON  = pros::E_CONTROLLER_DIGITAL_A; ///TODO: Change intake button to actual value
     const auto OUTTAKE_BUTTON = pros::E_CONTROLLER_DIGITAL_B;
+
+    const auto DRIVE_BRAKE_TOGGLE = pros::E_CONTROLLER_DIGITAL_X;
 }
 
 namespace constants {
     const int MOTOR_MOVE_MAX = 127;
+
+    const auto OKAPI_BRAKE = okapi::AbstractMotor::brakeMode::brake;
+    const auto OKAPI_COAST = okapi::AbstractMotor::brakeMode::coast;
 }
 
 #endif //ROBOT_CODE_CONSTANTS_H
