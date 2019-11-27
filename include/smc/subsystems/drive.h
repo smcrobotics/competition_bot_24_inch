@@ -21,7 +21,7 @@ namespace drive {
      */
     void init();
 
-    void opControl(double right_x, double right_y, double left_x);
+    void opControl(pros::Controller &);
 }
 
 #endif

@@ -13,6 +13,7 @@
 
 #include "subsystems/intake.h"
 #include "subsystems/tray.h"
+#include "subsystems/drive.h"
 #include "util/constants.h"
 
 #endif

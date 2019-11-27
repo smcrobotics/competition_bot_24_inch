@@ -15,8 +15,17 @@ namespace drive {
         drive::back_right_wheels = util::initMotor(robot::RIGHT_MOTOR_PORT);
     }
 
-    void opControl(double left, double right) {
-        drive::back_left_wheels->move(left);
-        drive::back_right_wheels->move(right);
+    void opControl(pros::Controller & master) {
+        int rightX = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X) / 127.0;
+        int rightY = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) / 127.0;
+        int leftX = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X) / 127.0;
+        int leftY = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 127.0;
+
+        if (rightX != 0 || rightY != 0)
+            robot::chassis->arcade(rightY, rightX);
+        else {
+            robot::chassis->forward(leftY); /// TODO: Make this less sensitive (i.e. slower) than right stick analog
+            robot::chassis->right(leftX);
+        }
     }
 }

@@ -1,5 +1,6 @@
 #include "main.h"
-#include "smc/util/constants.h"
+
+#include "smc/robot.h"
 #include "smc/tasks.h"
 
 using namespace okapi;
@@ -110,17 +111,11 @@ void autonomous() {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 void opcontrol() {
-    std::shared_ptr<ChassisControllerIntegrated> chassisPtr =
-            ChassisControllerFactory::createPtr(robot::LEFT_MOTOR_PORT, robot::RIGHT_MOTOR_PORT);
     pros::Motor intake_1(robot::INTAKE_MOTOR_PORT_LEFT);
     pros::Motor intake_2(robot::INTAKE_MOTOR_PORT_RIGHT);
     pros::Controller master(pros::E_CONTROLLER_MASTER);
 
     double intakeVel = 0;
-    double rightX;
-    double rightY;
-    double leftX;
-    double leftY;
 
 #if (AUTO_DEBUG == 1)
     bool should_continue = true;
@@ -132,17 +127,7 @@ void opcontrol() {
     }
 #else
     while (true) {
-        rightX = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X) / 127.0;
-        rightY = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) / 127.0;
-        leftX = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X) / 127.0;
-        leftY = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 127.0;
-
-        if (rightX != 0 || rightY != 0)
-            chassisPtr->arcade(rightY, rightX);
-        else {
-            chassisPtr->forward(leftY); /// TODO: Make this less sensitive (i.e. slower) than right stick analog
-            chassisPtr->right(leftX);
-        }
+        drive::opControl(master);
 
         if (master.get_digital(bindings::INTAKE_BUTTON))
             intakeVel = constants::MOTOR_MOVE_MAX;
