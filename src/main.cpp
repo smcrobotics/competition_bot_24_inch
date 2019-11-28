@@ -37,7 +37,7 @@ void initialize() {
     robot::chassis = ChassisControllerFactory::createPtr(
             okapi::MotorGroup{1, 2},
             okapi::MotorGroup{-3, -4},
-            AbstractMotor::gearset::green, {4_in, 12.5_in}
+            AbstractMotor::gearset::green, {2_in, 12_in}
     );
     robot::profile_controller = std::make_shared<AsyncMotionProfileController>(
             TimeUtilFactory::create(),
@@ -50,9 +50,11 @@ void initialize() {
 //    robot::chassis->setBrakeMode(okapi::Motor::brakeMode::brake);
     robot::profile_controller->generatePath({
         Point{0_ft, 0_ft, 0_deg},
-        Point{49_in, -59_in, 90_deg}},
+        Point{12_in, 12_in, 0_deg}},
                 "A" // Profile name
     );
+
+    autonomous();
 }
 
 /**
@@ -87,11 +89,13 @@ void competition_initialize() {}
 
 
 void autonomous() {
-    int timeout = 10;
-    pros::Task myTask(intake_task_fn, (void*) &timeout, "My Task");
+//    int timeout = 10;
+//    pros::Task myTask(intake_task_fn, (void*) &timeout, "My Task");
 
+    robot::chassis->setBrakeMode(constants::OKAPI_BRAKE);
     robot::profile_controller->setTarget("A");
     robot::profile_controller->waitUntilSettled();
+    robot::chassis->setBrakeMode(constants::OKAPI_COAST);
 }
 
 /**
@@ -110,12 +114,12 @@ void autonomous() {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 void opcontrol() {
-    pros::Motor intake_1(robot::INTAKE_MOTOR_PORT_LEFT);
-    pros::Motor intake_2(robot::INTAKE_MOTOR_PORT_RIGHT);
     pros::Controller master(pros::E_CONTROLLER_MASTER);
 
     double intakeVel = 0;
     bool isBrake = false;
+    int numBrakeTicks = 0;
+    std::string brakeMsg = "Brake mode on";
 
 #if (AUTO_DEBUG == 1)
     bool should_continue = true;
@@ -129,9 +133,19 @@ void opcontrol() {
     while (true) {
         drive::opControl(master);
 
-        if (master.get_digital(bindings::DRIVE_BRAKE_TOGGLE))
+        if (master.get_digital(bindings::DRIVE_BRAKE_TOGGLE) && numBrakeTicks == 0) {
             isBrake = !isBrake;
+            numBrakeTicks = 50;
+            if (isBrake)
+                master.set_text(1, 1, "Brake mode on ");
+            else
+                master.set_text(1, 1, "Brake mode off");
+        } else if (numBrakeTicks > 0)
+            numBrakeTicks--;
         robot::chassis->setBrakeMode(isBrake ? constants::OKAPI_BRAKE : constants::OKAPI_COAST);
+
+        if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
+            autonomous();
 
         if (master.get_digital(bindings::INTAKE_BUTTON))
             intakeVel = constants::MOTOR_MOVE_MAX;
@@ -140,8 +154,10 @@ void opcontrol() {
         else
             intakeVel = 0;
 
-        intake_1.move(intakeVel);
-        intake_2.move(intakeVel);
+//        intake_1.move(intakeVel);
+//        intake_2.move(intakeVel);
+
+        pros::delay(2);
     }
 #endif
 }
