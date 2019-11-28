@@ -9,19 +9,14 @@
 using namespace okapi;
 
 namespace drive {
-    std::unique_ptr<pros::Motor> back_left_wheels;
-    std::unique_ptr<pros::Motor> back_right_wheels;
 
-    void init() {
-        drive::back_left_wheels = util::initMotor(robot::LEFT_MOTOR_PORT);
-        drive::back_right_wheels = util::initMotor(robot::RIGHT_MOTOR_PORT);
-    }
+    void init() {}
 
-    void opControl(pros::Controller & master) {
-        double leftAnalogY = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) / 127.0;
-        double leftAnalogX = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X) / 127.0;
-        double rightAnalogY = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) / 127.0;
-        double rightAnalogX = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X) / 127.0;
+    void opControl(okapi::Controller & master) {
+        double leftAnalogY = master.getAnalog(okapi::ControllerAnalog::leftY) / 127.0;
+        double leftAnalogX = master.getAnalog(okapi::ControllerAnalog::leftX) / 127.0;
+        double rightAnalogY = master.getAnalog(okapi::ControllerAnalog::rightY) / 127.0;
+        double rightAnalogX = master.getAnalog(okapi::ControllerAnalog::rightX) / 127.0;
 
         double rightY = pow(abs(rightAnalogY), 1.5) * rightAnalogY / abs(rightAnalogY);
         double rightX = pow(abs(rightAnalogX), 1.5) * rightAnalogX / abs(rightAnalogX);

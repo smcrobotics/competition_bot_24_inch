@@ -21,7 +21,7 @@ namespace drive {
      */
     void init();
 
-    void opControl(pros::Controller &);
+    void opControl(okapi::Controller &);
 }
 
 #endif

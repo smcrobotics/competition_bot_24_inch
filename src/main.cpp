@@ -53,8 +53,6 @@ void initialize() {
         Point{12_in, 12_in, 0_deg}},
                 "A" // Profile name
     );
-
-    autonomous();
 }
 
 /**
@@ -90,7 +88,7 @@ void competition_initialize() {}
 
 void autonomous() {
 //    int timeout = 10;
-//    pros::Task myTask(intake_task_fn, (void*) &timeout, "My Task");
+//    pros::Task myTask(intake_task_fn, (void*) &timeout, "My Task");kd
 
     robot::chassis->setBrakeMode(constants::OKAPI_BRAKE);
     robot::profile_controller->setTarget("A");
@@ -114,7 +112,8 @@ void autonomous() {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 void opcontrol() {
-    pros::Controller master(pros::E_CONTROLLER_MASTER);
+    pros::Controller pros_master(pros::E_CONTROLLER_MASTER);
+    okapi::Controller master(okapi::ControllerId::master);
 
     double intakeVel = 0;
     bool isBrake = false;
@@ -124,32 +123,32 @@ void opcontrol() {
 #if (AUTO_DEBUG == 1)
     bool should_continue = true;
     while (should_continue) {
-        if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A))
+        if (master.getDigital(pros::E_CONTROLLER_DIGITAL_A))
             autonomous();
-        else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B))
+        else if (master.getDigital(pros::E_CONTROLLER_DIGITAL_B))
             should_continue = false;
     }
 #else
     while (true) {
         drive::opControl(master);
 
-        if (master.get_digital(bindings::DRIVE_BRAKE_TOGGLE) && numBrakeTicks == 0) {
+        if (master.getDigital(bindings::DRIVE_BRAKE_TOGGLE) && numBrakeTicks == 0) {
             isBrake = !isBrake;
             numBrakeTicks = 50;
             if (isBrake)
-                master.set_text(1, 1, "Brake mode on ");
+                master.setText(1, 1, "Brake mode on ");
             else
-                master.set_text(1, 1, "Brake mode off");
+                master.setText(1, 1, "Brake mode off");
         } else if (numBrakeTicks > 0)
             numBrakeTicks--;
         robot::chassis->setBrakeMode(isBrake ? constants::OKAPI_BRAKE : constants::OKAPI_COAST);
 
-        if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
+        if (master.getDigital(pros::E_CONTROLLER_DIGITAL_Y))
             autonomous();
 
-        if (master.get_digital(bindings::INTAKE_BUTTON))
+        if (master.getDigital(bindings::INTAKE_BUTTON))
             intakeVel = constants::MOTOR_MOVE_MAX;
-        else if (master.get_digital(bindings::OUTTAKE_BUTTON))
+        else if (master.getDigital(bindings::OUTTAKE_BUTTON))
             intakeVel = -constants::MOTOR_MOVE_MAX;
         else
             intakeVel = 0;
