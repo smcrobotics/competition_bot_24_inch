@@ -31,10 +31,10 @@ namespace robot {
 }
 
 namespace bindings {
-    const auto INTAKE_BUTTON  = pros::E_CONTROLLER_DIGITAL_A; ///TODO: Change intake button to actual value
-    const auto OUTTAKE_BUTTON = pros::E_CONTROLLER_DIGITAL_B;
+    const auto INTAKE_BUTTON  = okapi::ControllerDigital::A; ///TODO: Change intake button to actual value
+    const auto OUTTAKE_BUTTON = okapi::ControllerDigital::B;
 
-    const auto DRIVE_BRAKE_TOGGLE = pros::E_CONTROLLER_DIGITAL_X;
+    const auto DRIVE_BRAKE_TOGGLE = okapi::ControllerDigital::X;
 }
 
 namespace constants {
