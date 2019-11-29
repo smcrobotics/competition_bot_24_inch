@@ -2,6 +2,7 @@
 
 #include "smc/robot.h"
 #include "smc/tasks.h"
+#include "smc/util/Binding.h"
 
 using namespace okapi;
 
@@ -112,13 +113,29 @@ void autonomous() {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 void opcontrol() {
-    pros::Controller pros_master(pros::E_CONTROLLER_MASTER);
     okapi::Controller master(okapi::ControllerId::master);
 
     double intakeVel = 0;
     bool isBrake = false;
-    int numBrakeTicks = 0;
-    std::string brakeMsg = "Brake mode on";
+    std::vector<Binding> bind_list;
+
+    /** Begin bind block **/
+    bind_list.emplace_back(Binding(okapi::ControllerButton(bindings::DRIVE_BRAKE_TOGGLE), [isBrake, master]() mutable {
+        isBrake = !isBrake;
+        robot::chassis->setBrakeMode(isBrake? constants::OKAPI_BRAKE : constants::OKAPI_COAST);
+        master.setText(0, 0, isBrake ? "Brake mode on " : "Brake mode off");
+    }, 40)); // Bind for brake toggle
+
+    // TODO: Figure out how to do intake/outtake with these nifty bindings
+    bind_list.emplace_back(Binding(okapi::ControllerButton(bindings::INTAKE_BUTTON), []() {
+
+    }, 20));
+
+    // TODO: Remove this before competition
+    bind_list.emplace_back(Binding(okapi::ControllerButton(okapi::ControllerDigital::Y), autonomous, 0)); // Bind for auto test
+    // Note: Auto bind is blocking
+    /** End bind block **/
+    
 
 #if (AUTO_DEBUG == 1)
     bool should_continue = true;
@@ -131,20 +148,9 @@ void opcontrol() {
 #else
     while (true) {
         drive::opControl(master);
-
-        if (master.getDigital(bindings::DRIVE_BRAKE_TOGGLE) && numBrakeTicks == 0) {
-            isBrake = !isBrake;
-            numBrakeTicks = 50;
-            if (isBrake)
-                master.setText(1, 1, "Brake mode on ");
-            else
-                master.setText(1, 1, "Brake mode off");
-        } else if (numBrakeTicks > 0)
-            numBrakeTicks--;
-        robot::chassis->setBrakeMode(isBrake ? constants::OKAPI_BRAKE : constants::OKAPI_COAST);
-
-        if (master.getDigital(pros::E_CONTROLLER_DIGITAL_Y))
-            autonomous();
+        
+        for (Binding b : bind_list)
+            b.update();
 
         if (master.getDigital(bindings::INTAKE_BUTTON))
             intakeVel = constants::MOTOR_MOVE_MAX;
