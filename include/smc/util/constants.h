@@ -11,28 +11,37 @@
 
 using namespace okapi;
 namespace robot {
-    const bool TRAY_IN = true;
-    const bool TRAY_OUT = false;
+    const int FRONT_LEFT_DRIVE_MOTOR_PORT = 1;
+    const int FRONT_RIGHT_DRIVE_MOTOR_PORT = -2;
+    const int BACK_LEFT_DRIVE_MOTOR_PORT = 8;
+    const int BACK_RIGHT_DRIVE_MOTOR_PORT = -9;
 
-    const int LEFT_MOTOR_PORT = 1;
-    const int RIGHT_MOTOR_PORT = -2;
+    const int INTAKE_MOTOR_PORT_LEFT = 4; /// TODO: Change to intake motor left to actual value
+    const int INTAKE_MOTOR_PORT_RIGHT = -3; /// TODO: Change intake motor right to actual value
+    const int INTAKE_POS_MOTOR_PORT_LEFT = -10;
+    const int INTAKE_POS_MOTOR_PORT_RIGHT = 1;
 
-    const int INTAKE_MOTOR_PORT_LEFT = 3; /// TODO: Change to intake motor left to actual value
-    const int INTAKE_MOTOR_PORT_RIGHT = -4; /// TODO: Change intake motor right to actual value
-    const int INTAKE_FLIP_PORT = 5;
+    const int TRAY_POS_MOTOR_PORT = 7;
 
-    const int INTAKE_DOWN_POS = -600;
-    const int INTAKE_UP_POS = 600;
-
-    const int INTAKE_POSITION_MOTOR_PORT = 5; /// TODO: Change intake position motor to actual port
+    const float INTAKE_DOWN_POS = 0;
+    const float INTAKE_UP_POS_LEFT = 435.2;
+    const float INTAKE_UP_POS_RIGHT = 435.0;
 
     extern std::shared_ptr<okapi::ChassisControllerIntegrated> chassis;
     extern std::shared_ptr<okapi::AsyncMotionProfileController> profile_controller;
 }
 
 namespace bindings {
-    const auto INTAKE_BUTTON  = okapi::ControllerDigital::A; ///TODO: Change intake button to actual value
-    const auto OUTTAKE_BUTTON = okapi::ControllerDigital::B;
+    const auto INTAKE_BUTTON  = okapi::ControllerDigital::R1; ///TODO: Change intake button to actual value
+    const auto OUTTAKE_BUTTON = okapi::ControllerDigital::L1;
+
+    const auto TOGGLE_INTAKE_POS = okapi::ControllerDigital::B;
+    const auto INTAKE_POS_UP = okapi::ControllerDigital::up;
+    const auto INTAKE_POS_DOWN = okapi::ControllerDigital::left;
+
+    const auto TOGGLE_TRAY_POS = okapi::ControllerDigital::A;
+    const auto LOWER_TRAY = okapi::ControllerDigital::down;
+    const auto RAISE_TRAY = okapi::ControllerDigital::right;
 
     const auto DRIVE_BRAKE_TOGGLE = okapi::ControllerDigital::X;
 }

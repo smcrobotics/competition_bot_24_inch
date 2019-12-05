@@ -5,6 +5,10 @@
 #include "smc/util/Binding.h"
 
 using namespace okapi;
+using std::cout;
+using std::endl;
+
+typedef okapi::ControllerButton Button;
 
 /// Begin forward declaration block
 std::shared_ptr<okapi::AsyncMotionProfileController> robot::profile_controller;
@@ -114,29 +118,49 @@ void autonomous() {
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 void opcontrol() {
     okapi::Controller master(okapi::ControllerId::master);
+    intake::init();
 
     double intakeVel = 0;
     bool isBrake = false;
     std::vector<Binding> bind_list;
 
     /** Begin bind block **/
-    bind_list.emplace_back(Binding(okapi::ControllerButton(bindings::DRIVE_BRAKE_TOGGLE), [isBrake, master]() mutable {
+    // Brake toggle binding
+    bind_list.emplace_back(Binding(okapi::ControllerButton(bindings::DRIVE_BRAKE_TOGGLE), nullptr,
+            [isBrake, master]() mutable {
         isBrake = !isBrake;
         robot::chassis->setBrakeMode(isBrake? constants::OKAPI_BRAKE : constants::OKAPI_COAST);
         master.setText(0, 0, isBrake ? "Brake mode on " : "Brake mode off");
-    }, 40)); // Bind for brake toggle
+    }, nullptr));
 
-    // TODO: Figure out how to do intake/outtake with these nifty bindings
+    // Intake hold binding
     bind_list.emplace_back(Binding(okapi::ControllerButton(bindings::INTAKE_BUTTON), []() {
+        intake::setIntakeVelocity(100);
+    }, []() {
+        intake::setIntakeVelocity(0);
+    }, nullptr));
 
-    }, 20));
+    // Outtake hold binding
+    bind_list.emplace_back(Binding(okapi::ControllerButton(bindings::OUTTAKE_BUTTON), []() {
+        intake::setIntakeVelocity(-100);
+    }, []() {
+        intake::setIntakeVelocity(0);
+    }, nullptr));
+
+    // Arm position bindings
+    bind_list.emplace_back(Binding(Button(bindings::INTAKE_POS_UP), []() {
+        intake::moveArmsToPosition(intake::Position::UP);
+    }, nullptr, nullptr));
+    bind_list.emplace_back(Binding(Button(bindings::INTAKE_POS_DOWN), []() {
+        intake::moveArmsToPosition(intake::Position::DOWN);
+    }, nullptr, nullptr));
 
     // TODO: Remove this before competition
-    bind_list.emplace_back(Binding(okapi::ControllerButton(okapi::ControllerDigital::Y), autonomous, 0)); // Bind for auto test
+    bind_list.emplace_back(Binding(okapi::ControllerButton(okapi::ControllerDigital::Y), autonomous, nullptr, nullptr)); // Bind for auto test
     // Note: Auto bind is blocking
     /** End bind block **/
     
-
+    cout << "hey we here" << endl;
 #if (AUTO_DEBUG == 1)
     bool should_continue = true;
     while (should_continue) {
@@ -151,16 +175,7 @@ void opcontrol() {
         
         for (Binding b : bind_list)
             b.update();
-
-        if (master.getDigital(bindings::INTAKE_BUTTON))
-            intakeVel = constants::MOTOR_MOVE_MAX;
-        else if (master.getDigital(bindings::OUTTAKE_BUTTON))
-            intakeVel = -constants::MOTOR_MOVE_MAX;
-        else
-            intakeVel = 0;
-
-//        intake_1.move(intakeVel);
-//        intake_2.move(intakeVel);
+        intake::printPos();
 
         pros::delay(2);
     }

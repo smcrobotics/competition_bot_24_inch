@@ -6,11 +6,12 @@
 #define ROBOT_CODE_UTIL_H
 
 #include "api.h"
+#include "okapi/api.hpp"
 #include <memory>
 
 namespace util {
     // helper function to create motor and set brake mode
-    std::unique_ptr<pros::Motor> initMotor(int port);
+    std::unique_ptr<okapi::Motor> initMotor(int port);
 }
 
 #endif //ROBOT_CODE_UTIL_H

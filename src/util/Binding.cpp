@@ -7,19 +7,28 @@
 #include <utility>
 
 
-Binding::Binding(const okapi::ControllerButton &bind, CallbackFn callback) :
-    Binding(bind, callback, 0) {}
-
-Binding::Binding(okapi::ControllerButton bind, CallbackFn callback, int timeout) :
-        m_button(std::move(bind)), m_callback(std::move(callback)), m_timeout(timeout) {
-    m_timeout_count = 0;
-}
+Binding::Binding(okapi::ControllerButton button, CallbackFn onPress,
+                 CallbackFn onRelease, CallbackFn onPressedUpdate) : m_button(std::move(button)),
+                 m_updateCallback(std::move(onPressedUpdate)), m_pressedCallback(std::move(onPress)), m_releasedCallback(std::move(onRelease))
+                 {}
 
 void Binding::update() {
-    if (m_button.isPressed() && m_timeout_count == 0) {
-        m_callback();
-        m_timeout_count = m_timeout;
-    }
+    if ( m_updateCallback != nullptr && m_button.isPressed())
+        m_updateCallback();
+    if (m_pressedCallback != nullptr && m_button.changedToPressed())
+        m_pressedCallback();
+    if (m_releasedCallback != nullptr && m_button.changedToReleased())
+        m_releasedCallback();
+}
 
-    if (m_timeout_count > 0) m_timeout_count--;
+void Binding::onPress(CallbackFn & callback) {
+    m_pressedCallback = callback;
+}
+
+void Binding::onReleased(CallbackFn &callback) {
+    m_releasedCallback = callback;
+}
+
+void Binding::onUpdatePressed(CallbackFn &callback) {
+    m_updateCallback = callback;
 }

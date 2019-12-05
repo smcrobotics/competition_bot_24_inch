@@ -13,15 +13,17 @@ typedef std::function<void (void)> CallbackFn;
 
 class Binding {
 public:
-    Binding(const okapi::ControllerButton & button, CallbackFn callback);
-    Binding(okapi::ControllerButton button, CallbackFn callback, int timeout);
+    Binding(okapi::ControllerButton  button, CallbackFn onPress, CallbackFn onRelease, CallbackFn onPressedUpdate);
 
     void update();
+    void onUpdatePressed(CallbackFn & callback);
+    void onPress(CallbackFn & callback);
+    void onReleased(CallbackFn & callback);
 private:
     okapi::ControllerButton m_button;
-    const CallbackFn m_callback;
-    const int m_timeout;
-    int m_timeout_count;
+    CallbackFn m_updateCallback;
+    CallbackFn m_pressedCallback;
+    CallbackFn m_releasedCallback;
 };
 
 
