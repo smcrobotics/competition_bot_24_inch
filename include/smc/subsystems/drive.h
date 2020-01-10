@@ -15,6 +15,8 @@
 #ifndef _DRIVE_H_
 #define _DRIVE_H_
 
+#include "okapi/api.hpp"
+
 namespace drive {
     /**
      * Creates relevant objects for the drivetrain subsystem and starts their tasks.

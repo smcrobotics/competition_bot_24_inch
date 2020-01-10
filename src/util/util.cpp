@@ -1,3 +1,4 @@
+#include "smc/robot.h"
 #include "smc/util/util.h"
 #include "okapi/api.hpp"
 
@@ -6,7 +7,7 @@ namespace util {
     std::unique_ptr<okapi::Motor> initMotor(int port) {
         // E_MOTOR_GEARSET_18 is for 200rpm motors, default for v5 smart motor
         std::unique_ptr<okapi::Motor> motor = std::make_unique<okapi::Motor>(port);
-        motor->set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+        motor->setBrakeMode(constants::OKAPI_BRAKE);
         motor->setGearing(okapi::AbstractMotor::gearset::green);
         return motor;
     }

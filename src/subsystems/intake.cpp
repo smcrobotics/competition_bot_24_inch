@@ -18,16 +18,24 @@ namespace intake {
         left_intake_pos_motor = util::initMotor(robot::INTAKE_POS_MOTOR_PORT_LEFT);
         right_intake_pos_motor = util::initMotor(robot::INTAKE_POS_MOTOR_PORT_RIGHT);
 
-//        left_intake_pos_motor->setPosPID(1, intakePosKP, intakePosKI, intakePosKD);
-//        right_intake_pos_motor->setPosPID(1, intakePosKP, intakePosKI, intakePosKD);
 
         left_intake_pos_motor->tarePosition();
         right_intake_pos_motor->tarePosition();
+//        left_intake_pos_motor->move(127);
+//        right_intake_pos_motor->move(127);
     }
 
     void moveArmsToPosition(intake::Position position) {
-        right_intake_pos_motor->moveAbsolute(robot::INTAKE_UP_POS_RIGHT, 1);
-        left_intake_pos_motor->moveAbsolute(robot::INTAKE_UP_POS_LEFT, 1);
+        right_intake_pos_motor->moveAbsolute(robot::INTAKE_UP_POS_RIGHT, 20);
+        left_intake_pos_motor->moveAbsolute(robot::INTAKE_UP_POS_LEFT, 20);
+
+//        if (position == UP) {
+//            left_intake_pos_motor->move(25);
+//            right_intake_pos_motor->move(25);
+//        } else if (position == DOWN) {
+//            left_intake_pos_motor->move(0);
+//            right_intake_pos_motor->move(0);
+//        }
     }
 
     void printPos() {

@@ -11,20 +11,20 @@
 
 using namespace okapi;
 namespace robot {
-    const int FRONT_LEFT_DRIVE_MOTOR_PORT = 1;
+    const int FRONT_LEFT_DRIVE_MOTOR_PORT = 18;
     const int FRONT_RIGHT_DRIVE_MOTOR_PORT = -2;
     const int BACK_LEFT_DRIVE_MOTOR_PORT = 8;
     const int BACK_RIGHT_DRIVE_MOTOR_PORT = -9;
 
-    const int INTAKE_MOTOR_PORT_LEFT = 4; /// TODO: Change to intake motor left to actual value
-    const int INTAKE_MOTOR_PORT_RIGHT = -3; /// TODO: Change intake motor right to actual value
+    const int INTAKE_MOTOR_PORT_LEFT = 20; /// TODO: Change to intake motor left to actual value
+    const int INTAKE_MOTOR_PORT_RIGHT = -11; /// TODO: Change intake motor right to actual value
     const int INTAKE_POS_MOTOR_PORT_LEFT = -10;
     const int INTAKE_POS_MOTOR_PORT_RIGHT = 1;
 
     const int TRAY_POS_MOTOR_PORT = 7;
 
     const float INTAKE_DOWN_POS = 0;
-    const float INTAKE_UP_POS_LEFT = 435.2;
+    const float INTAKE_UP_POS_LEFT = 435.0;
     const float INTAKE_UP_POS_RIGHT = 435.0;
 
     extern std::shared_ptr<okapi::ChassisControllerIntegrated> chassis;
