@@ -26,8 +26,14 @@ namespace intake {
     }
 
     void moveArmsToPosition(intake::Position position) {
-        right_intake_pos_motor->moveAbsolute(robot::INTAKE_UP_POS_RIGHT, 20);
-        left_intake_pos_motor->moveAbsolute(robot::INTAKE_UP_POS_LEFT, 20);
+        if (position == UP) {
+            right_intake_pos_motor->moveAbsolute(robot::INTAKE_UP_POS_RIGHT, 120);
+            left_intake_pos_motor->moveAbsolute(robot::INTAKE_UP_POS_LEFT, 120);
+        } else if (position == DOWN) {
+            right_intake_pos_motor->moveAbsolute(robot::INTAKE_DOWN_POS, 80);
+            left_intake_pos_motor->moveAbsolute(robot::INTAKE_DOWN_POS, 80);
+        }
+
 
 //        if (position == UP) {
 //            left_intake_pos_motor->move(25);
@@ -39,8 +45,8 @@ namespace intake {
     }
 
     void printPos() {
-        std::cout << "left: " << left_intake_pos_motor->getPosition() << std::endl;
-        std::cout << "right: " << right_intake_pos_motor->getPosition() << std::endl;
+//        std::cout << "left: " << left_intake_pos_motor->getPosition() << std::endl;
+//        std::cout << "right: " << right_intake_pos_motor->getPosition() << std::endl;
     }
 
     void setIntakeVelocity(int percent) {

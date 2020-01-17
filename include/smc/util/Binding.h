@@ -20,6 +20,11 @@ public:
     void onPress(CallbackFn & callback);
     void onReleased(CallbackFn & callback);
 private:
+    const int IGNORE_LENGTH = 0;
+
+    bool was_pressed;
+    int ignore_tick;
+
     okapi::ControllerButton m_button;
     CallbackFn m_updateCallback;
     CallbackFn m_pressedCallback;

@@ -42,7 +42,7 @@ void initialize() {
     robot::chassis = ChassisControllerFactory::createPtr(
             okapi::MotorGroup{robot::BACK_LEFT_DRIVE_MOTOR_PORT, robot::FRONT_LEFT_DRIVE_MOTOR_PORT},
             okapi::MotorGroup{robot::BACK_RIGHT_DRIVE_MOTOR_PORT, robot::FRONT_RIGHT_DRIVE_MOTOR_PORT},
-            AbstractMotor::gearset::green, {2_in, 12_in}
+            AbstractMotor::gearset::green, {4_in, 14_in} // TODO: Chassis
     );
     robot::profile_controller = std::make_shared<AsyncMotionProfileController>(
             TimeUtilFactory::create(),
@@ -52,7 +52,6 @@ void initialize() {
             robot::chassis->getGearsetRatioPair()
     );
 
-    auto motionProfiler = AsyncControllerFactory
 
 
 //    robot::chassis->setBrakeMode(okapi::Motor::brakeMode::brake);
@@ -132,7 +131,7 @@ void opcontrol() {
     bind_list.emplace_back(Binding(okapi::ControllerButton(bindings::DRIVE_BRAKE_TOGGLE), nullptr,
             [isBrake, master]() mutable {
         isBrake = !isBrake;
-        robot::chassis->setBrakeMode(isBrake? constants::OKAPI_BRAKE : constants::OKAPI_COAST);
+        robot::chassis->setBrakeMode(isBrake ? constants::OKAPI_BRAKE : constants::OKAPI_COAST);
         master.setText(0, 0, isBrake ? "Brake mode on " : "Brake mode off");
     }, nullptr));
 
@@ -141,6 +140,7 @@ void opcontrol() {
         intake::setIntakeVelocity(100);
     }, []() {
         intake::setIntakeVelocity(0);
+        cout << "balls" << endl;
     }, nullptr));
 
     // Outtake hold binding
@@ -181,7 +181,7 @@ void opcontrol() {
         intake::printPos();
 
 
-        pros::delay(2);
+        pros::delay(1);
     }
 #endif
 }
