@@ -124,11 +124,11 @@ void opcontrol() {
 
     double intakeVel = 0;
     bool isBrake = false;
-    std::vector<Binding> bind_list;
+    std::vector<Binding *> bind_list;
 
     /** Begin bind block **/
     // Brake toggle binding
-    bind_list.emplace_back(Binding(okapi::ControllerButton(bindings::DRIVE_BRAKE_TOGGLE), nullptr,
+    bind_list.emplace_back(new Binding(okapi::ControllerButton(bindings::DRIVE_BRAKE_TOGGLE), nullptr,
             [isBrake, master]() mutable {
         isBrake = !isBrake;
         robot::chassis->setBrakeMode(isBrake ? constants::OKAPI_BRAKE : constants::OKAPI_COAST);
@@ -136,30 +136,29 @@ void opcontrol() {
     }, nullptr));
 
     // Intake hold binding
-    bind_list.emplace_back(Binding(okapi::ControllerButton(bindings::INTAKE_BUTTON), []() {
+    bind_list.emplace_back(new Binding(okapi::ControllerButton(bindings::INTAKE_BUTTON), []() {
         intake::setIntakeVelocity(100);
     }, []() {
         intake::setIntakeVelocity(0);
-        cout << "balls" << endl;
     }, nullptr));
 
     // Outtake hold binding
-    bind_list.emplace_back(Binding(okapi::ControllerButton(bindings::OUTTAKE_BUTTON), []() {
+    bind_list.emplace_back(new Binding(okapi::ControllerButton(bindings::OUTTAKE_BUTTON), []() {
         intake::setIntakeVelocity(-100);
     }, []() {
         intake::setIntakeVelocity(0);
     }, nullptr));
 
     // Arm position bindings
-    bind_list.emplace_back(Binding(Button(bindings::INTAKE_POS_UP), []() {
+    bind_list.emplace_back(new Binding(Button(bindings::INTAKE_POS_UP), []() {
         intake::moveArmsToPosition(intake::Position::UP);
     }, nullptr, nullptr));
-    bind_list.emplace_back(Binding(Button(bindings::INTAKE_POS_DOWN), []() {
+    bind_list.emplace_back(new Binding(Button(bindings::INTAKE_POS_DOWN), []() {
         intake::moveArmsToPosition(intake::Position::DOWN);
     }, nullptr, nullptr));
 
     // TODO: Remove this before competition
-    bind_list.emplace_back(Binding(okapi::ControllerButton(okapi::ControllerDigital::Y), autonomous, nullptr, nullptr)); // Bind for auto test
+    bind_list.emplace_back(new Binding(okapi::ControllerButton(okapi::ControllerDigital::Y), autonomous, nullptr, nullptr)); // Bind for auto test
     // Note: Auto bind is blocking
     /** End bind block **/
     
@@ -176,13 +175,16 @@ void opcontrol() {
     while (true) {
         drive::opControl(master);
         
-        for (Binding b : bind_list)
-            b.update();
+        for (Binding * b : bind_list)
+            b->update();
         intake::printPos();
 
 
-        pros::delay(1);
+        pros::delay(500);
     }
+
+    for (Binding * b : bind_list)
+        delete b;
 #endif
 }
 #pragma clang diagnostic pop
