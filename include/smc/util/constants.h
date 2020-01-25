@@ -7,8 +7,6 @@
 #include "main.h"
 #include "okapi/api.hpp"
 
-#define DEBUG_MODE 0
-
 using namespace okapi;
 namespace robot {
     const int FRONT_LEFT_DRIVE_MOTOR_PORT = 16;

@@ -116,25 +116,8 @@ void autonomous() {
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-noreturn"
-void opcontrol() {
-    okapi::Controller master(okapi::ControllerId::master);
-    intake::init();
 
-    double intakeVel = 0;
-    bool isBrake = false;
-    std::vector<Binding *> bind_list;
-
-    /** Begin bind block **/
-    // Brake toggle binding
-    bind_list.emplace_back(new Binding(okapi::ControllerButton(bindings::DRIVE_BRAKE_TOGGLE), nullptr,
-            [isBrake, master]() mutable {
-        isBrake = !isBrake;
-        robot::chassis->setBrakeMode(isBrake ? constants::OKAPI_BRAKE : constants::OKAPI_COAST);
-        master.setText(0, 0, isBrake ? "Brake mode on " : "Brake mode off");
-    }, nullptr));
-
+void initBindings(std::vector<Binding *> & bind_list) {
     // Intake hold binding
     bind_list.emplace_back(new Binding(okapi::ControllerButton(bindings::INTAKE_BUTTON), []() {
         intake::setIntakeVelocity(100);
@@ -161,18 +144,31 @@ void opcontrol() {
     bind_list.emplace_back(new Binding(okapi::ControllerButton(okapi::ControllerDigital::Y), autonomous, nullptr, nullptr)); // Bind for auto test
     // Note: Auto bind is blocking
     /** End bind block **/
+}
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmissing-noreturn"
+void opcontrol() {
+    okapi::Controller master(okapi::ControllerId::master);
+    intake::init();
+
+    bool isBrake = false;
+    std::vector<Binding *> bind_list;
+    initBindings(bind_list);
+    // Have to do the drive-brake toggle here because it relies on variables local to main()
+    bind_list.emplace_back(new Binding(okapi::ControllerButton(bindings::DRIVE_BRAKE_TOGGLE), nullptr,
+            [isBrake, master]() mutable {
+        isBrake = !isBrake;
+        robot::chassis->setBrakeMode(isBrake ? constants::OKAPI_BRAKE : constants::OKAPI_COAST);
+        master.setText(0, 0, isBrake ? "Brake mode on " : "Brake mode off");
+        }, nullptr));
+
+    /** Begin bind block **/
+    // Brake toggle binding
+
     
-    cout << "hey we here" << endl;
-#if (AUTO_DEBUG == 1)
-    bool should_continue = true;
-    while (should_continue) {
-        if (master.getDigital(pros::E_CONTROLLER_DIGITAL_A))
-            autonomous();
-        else if (master.getDigital(pros::E_CONTROLLER_DIGITAL_B))
-            should_continue = false;
-    }
-#else
-    while (true) {
+    cout << "Initialization finished, entering drive loop" << endl;
+    while (!pros::competition::is_disabled()) { // TODO: Figure out if this works?
         drive::opControl(master);
         
         for (Binding * b : bind_list)
@@ -180,11 +176,12 @@ void opcontrol() {
         intake::printPos();
 
 
-        pros::delay(500);
+        pros::delay(1);
     }
 
     for (Binding * b : bind_list)
         delete b;
-#endif
+
+    cout << "Exiting opcontrol()" << endl;
 }
 #pragma clang diagnostic pop

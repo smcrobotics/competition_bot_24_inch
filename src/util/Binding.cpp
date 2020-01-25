@@ -11,7 +11,7 @@ using std::endl;
 
 Binding::Binding(okapi::ControllerButton button, CallbackFn onPress,
                  CallbackFn onRelease, CallbackFn onPressedUpdate) : m_button(std::move(button)),
-                 m_updateCallback(std::move(onPressedUpdate)), m_pressedCallback(std::move(onPress)), m_releasedCallback(std::move(onRelease)),
+                 m_updateCallback(std::move(onPressedUpdate)), m_pressedCallback(std::move(onPress)), m_releasedCallback(std::move(onRelease))
                  {cout << "Constructed binding object" << endl;}
 
 void Binding::update() {
@@ -21,7 +21,7 @@ void Binding::update() {
     if (m_pressedCallback != nullptr && m_button.changedToPressed()) {
         m_pressedCallback();
     }
-    if (m_releasedCallback != nullptr && m_button.changedToReleased()) { 
+    if (m_releasedCallback != nullptr && m_button.changedToReleased()) {
         m_releasedCallback();
     }
 }
