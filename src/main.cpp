@@ -163,9 +163,6 @@ void opcontrol() {
         master.setText(0, 0, isBrake ? "Brake mode on " : "Brake mode off");
         }, nullptr));
 
-    /** Begin bind block **/
-    // Brake toggle binding
-
     
     cout << "Initialization finished, entering drive loop" << endl;
     while (!pros::competition::is_disabled()) { // TODO: Figure out if this works?
@@ -174,7 +171,6 @@ void opcontrol() {
         for (Binding * b : bind_list)
             b->update();
         intake::printPos();
-
 
         pros::delay(1);
     }
