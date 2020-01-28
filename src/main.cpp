@@ -1,5 +1,21 @@
 #include "main.h"
 
+#include "smc/robot.h"
+#include "smc/tasks.h"
+#include "smc/util/Binding.h"
+
+using namespace okapi;
+using std::cout;
+using std::endl;
+
+typedef okapi::ControllerButton Button;
+
+/// Begin forward declaration block
+std::shared_ptr<okapi::AsyncMotionProfileController> robot::profile_controller;
+std::shared_ptr<okapi::ChassisControllerIntegrated> robot::chassis;
+/// End forward declaration block
+
+
 /**
  * A callback function for LLEMU's center button.
  *
@@ -23,10 +39,27 @@ void on_center_button() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-    pros::lcd::initialize();
-    pros::lcd::set_text(1, "Hello PROS User!");
+    robot::chassis = ChassisControllerFactory::createPtr(
+            okapi::MotorGroup{robot::BACK_LEFT_DRIVE_MOTOR_PORT, robot::FRONT_LEFT_DRIVE_MOTOR_PORT},
+            okapi::MotorGroup{robot::BACK_RIGHT_DRIVE_MOTOR_PORT, robot::FRONT_RIGHT_DRIVE_MOTOR_PORT},
+            AbstractMotor::gearset::green, {4_in, 14_in} // TODO: Chassis
+    );
+    robot::profile_controller = std::make_shared<AsyncMotionProfileController>(
+            TimeUtilFactory::create(),
+            1.0, 0.5, 1.5,
+            robot::chassis->getChassisModel(),
+            robot::chassis->getChassisScales(),
+            robot::chassis->getGearsetRatioPair()
+    );
 
-    pros::lcd::register_btn1_cb(on_center_button);
+
+
+//    robot::chassis->setBrakeMode(okapi::Motor::brakeMode::brake);
+    robot::profile_controller->generatePath({
+        Point{0_ft, 0_ft, 0_deg},
+        Point{12_in, 12_in, 0_deg}},
+                "A" // Profile name
+    );
 }
 
 /**
@@ -58,7 +91,17 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+
+
+void autonomous() {
+//    int timeout = 10;
+//    pros::Task myTask(intake_task_fn, (void*) &timeout, "My Task");kd
+
+    robot::chassis->setBrakeMode(constants::OKAPI_BRAKE);
+    robot::profile_controller->setTarget("A");
+    robot::profile_controller->waitUntilSettled();
+    robot::chassis->setBrakeMode(constants::OKAPI_COAST);
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -73,25 +116,68 @@ void autonomous() {}
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
-#define BACK_LEFT_WHEELS_PORT 1//TODO: DEFINE THIS
-#define FRONT_LEFT_WHEELS_PORT 2//TODO: DEFINE THIS
-#define BACK_RIGHT_WHEELS_PORT 3//TODO: DEFINE THIS
-#define FRONT_RIGHT_WHEELS_PORT 4//TODO: DEFINE THIS
 
-void opcontrol() {
-    pros::Motor back_left_wheels (BACK_LEFT_WHEELS_PORT);
-    pros::Motor front_left_wheels (FRONT_LEFT_WHEELS_PORT);
-    pros::Motor back_right_wheels (BACK_RIGHT_WHEELS_PORT, true);
-    pros::Motor front_right_wheels (FRONT_RIGHT_WHEELS_PORT, true);
-    pros::Controller master (CONTROLLER_MASTER);
+void initBindings(std::vector<Binding *> & bind_list) {
+    // Intake hold binding
+    bind_list.emplace_back(new Binding(okapi::ControllerButton(bindings::INTAKE_BUTTON), []() {
+        intake::setIntakeVelocity(100);
+    }, []() {
+        intake::setIntakeVelocity(0);
+    }, nullptr));
 
-    while (true) {
-        // tank drive
-        back_left_wheels.move(master.get_analog(ANALOG_LEFT_Y));
-        front_left_wheels.move(master.get_analog(ANALOG_LEFT_Y));
-        back_right_wheels.move(master.get_analog(ANALOG_RIGHT_Y));
-        front_right_wheels.move(master.get_analog(ANALOG_RIGHT_Y));
+    // Outtake hold binding
+    bind_list.emplace_back(new Binding(okapi::ControllerButton(bindings::OUTTAKE_BUTTON), []() {
+        intake::setIntakeVelocity(-100);
+    }, []() {
+        intake::setIntakeVelocity(0);
+    }, nullptr));
 
-        pros::delay(20);
-    }
+    // Arm position bindings
+    bind_list.emplace_back(new Binding(Button(bindings::INTAKE_POS_UP), []() {
+        intake::moveArmsToPosition(intake::Position::UP);
+    }, nullptr, nullptr));
+    bind_list.emplace_back(new Binding(Button(bindings::INTAKE_POS_DOWN), []() {
+        intake::moveArmsToPosition(intake::Position::DOWN);
+    }, nullptr, nullptr));
+
+    // TODO: Remove this before competition
+    bind_list.emplace_back(new Binding(okapi::ControllerButton(okapi::ControllerDigital::Y), autonomous, nullptr, nullptr)); // Bind for auto test
+    // Note: Auto bind is blocking
+    /** End bind block **/
 }
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmissing-noreturn"
+void opcontrol() {
+    okapi::Controller master(okapi::ControllerId::master);
+    intake::init();
+
+    bool isBrake = false;
+    std::vector<Binding *> bind_list;
+    initBindings(bind_list);
+    // Have to do the drive-brake toggle here because it relies on variables local to main()
+    bind_list.emplace_back(new Binding(okapi::ControllerButton(bindings::DRIVE_BRAKE_TOGGLE), nullptr,
+            [isBrake, master]() mutable {
+        isBrake = !isBrake;
+        robot::chassis->setBrakeMode(isBrake ? constants::OKAPI_BRAKE : constants::OKAPI_COAST);
+        master.setText(0, 0, isBrake ? "Brake mode on " : "Brake mode off");
+        }, nullptr));
+
+    
+    cout << "Initialization finished, entering drive loop" << endl;
+    while (!pros::competition::is_disabled()) { // TODO: Figure out if this works?
+        drive::opControl(master);
+        
+        for (Binding * b : bind_list)
+            b->update();
+        intake::printPos();
+
+        pros::delay(1);
+    }
+
+    for (Binding * b : bind_list)
+        delete b;
+
+    cout << "Exiting opcontrol()" << endl;
+}
+#pragma clang diagnostic pop

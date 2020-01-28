@@ -1,11 +1,11 @@
 {
     "py/object": "pros.conductor.project.Project",
     "py/state": {
-        "project_name": "competition_bot_24in_2019",
+        "project_name": "robot-code",
         "target": "v5",
         "templates": {
             "kernel": {
-                "location": "/Users/nashish/Library/Application Support/PROS/templates/kernel@3.2.0",
+                "location": "/home/ariel/.config/pros/templates/kernel@3.2.0",
                 "metadata": {
                     "cold_addr": "58720256",
                     "cold_output": "bin/cold.package.bin",
@@ -149,7 +149,7 @@
                 "version": "3.2.0"
             },
             "okapilib": {
-                "location": "/Users/nashish/Library/Application Support/PROS/templates/okapilib@3.3.13",
+                "location": "/home/ariel/.config/pros/templates/okapilib@3.3.13",
                 "metadata": {
                     "origin": "pros-mainline"
                 },
