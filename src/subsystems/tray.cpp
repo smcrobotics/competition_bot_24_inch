@@ -33,7 +33,7 @@ namespace tray {
 
     void moveTrayToPosition(TrayPosition pos) {
         if (pos == UP) {
-            tray_position_motor->moveAbsolute(robot::TRAY_MOTOR_POS_UP, 120);
+            tray_position_motor->moveAbsolute(robot::TRAY_MOTOR_POS_UP, 5);
             limit_timeout = 40;
             current_pos = UP;
         } else if (pos == DOWN) {

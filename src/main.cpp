@@ -140,6 +140,9 @@ void initBindings(std::vector<Binding *> & bind_list) {
         intake::moveArmsToPosition(intake::IntakePosition::DOWN);
     }, nullptr, nullptr));
 
+    // Toggle tray binding
+    bind_list.emplace_back(new Binding(Button(bindings::TOGGLE_TRAY_POS), tray::togglePosition, nullptr, nullptr));
+
     // TODO: Remove this before competition
     bind_list.emplace_back(new Binding(okapi::ControllerButton(okapi::ControllerDigital::Y), autonomous, nullptr, nullptr)); // Bind for auto test
     // Note: Auto bind is blocking
@@ -151,6 +154,7 @@ void initBindings(std::vector<Binding *> & bind_list) {
 void opcontrol() {
     okapi::Controller master(okapi::ControllerId::master);
     intake::init();
+    tray::init();
 
     bool isBrake = false;
     std::vector<Binding *> bind_list;
@@ -170,7 +174,7 @@ void opcontrol() {
         
         for (Binding * b : bind_list)
             b->update();
-        intake::printPos();
+//        intake::printPos();
 
         pros::delay(1);
     }
