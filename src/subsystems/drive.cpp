@@ -23,6 +23,6 @@ namespace drive {
         double leftX = pow(abs(leftAnalogX), 1.5) * leftAnalogX / abs(leftAnalogX);
         double leftY = pow(abs(leftAnalogY), 1.5) * leftAnalogY / abs(leftAnalogY);
 
-        robot::chassis->tank(leftY, rightY);
+        robot::chassis->getModel()->tank(leftY, rightY);
     }
 }
