@@ -11,7 +11,10 @@
 
 namespace util {
     // helper function to create motor and set brake mode
+    std::unique_ptr<okapi::Motor> initMotor(int port, okapi::AbstractMotor::gearset gearset);
     std::unique_ptr<okapi::Motor> initMotor(int port);
+
+    std::unique_ptr<okapi::ADIButton> initLimitSwitch(char port);
 }
 
 #endif //ROBOT_CODE_UTIL_H

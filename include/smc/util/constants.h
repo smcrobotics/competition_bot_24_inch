@@ -9,28 +9,45 @@
 
 using namespace okapi;
 namespace robot {
+    /* Begin drive motor block */
     const int FRONT_LEFT_DRIVE_MOTOR_PORT = 16;
     const int FRONT_RIGHT_DRIVE_MOTOR_PORT = -15;
     const int BACK_LEFT_DRIVE_MOTOR_PORT = 12;
     const int BACK_RIGHT_DRIVE_MOTOR_PORT = -11;
+    /* End drive motor block */
 
-    const int INTAKE_MOTOR_PORT_LEFT = -1; /// TODO: Change to intake motor left to actual value
-    const int INTAKE_MOTOR_PORT_RIGHT = 10; /// TODO: Change intake motor right to actual value
+
+    /* Begin intake block */
+    const int INTAKE_MOTOR_PORT_LEFT = -1; // TODO: Placeholder value
+    const int INTAKE_MOTOR_PORT_RIGHT = 10; // TODO: Placeholder value
     const int INTAKE_POS_MOTOR_PORT_LEFT = -9;
     const int INTAKE_POS_MOTOR_PORT_RIGHT = 2;
 
-    const int TRAY_POS_MOTOR_PORT = 7;
+    const char INTAKE_POS_LIMIT_SWITCH_UP = 'A'; // TODO: Placeholder value
+    const char INTAKE_POS_LIMIT_SWITCH_DOWN = 'A'; //TODO: Placeholder value
 
     const float INTAKE_DOWN_POS = 0;
     const float INTAKE_UP_POS_LEFT = 410.0;
     const float INTAKE_UP_POS_RIGHT = 410.0;
+    /* End intake block */
 
-    extern std::shared_ptr<okapi::ChassisControllerIntegrated> chassis;
+
+    /* Begin tray block */
+    const int TRAY_POS_MOTOR_PORT = 15;
+    const int TRAY_MOTOR_POS_UP = 410; // TODO: Placeholder value
+
+    const char TRAY_POS_DOWN_LIMIT_SWITCH = 'H';
+    /* End tray block */
+
+
+    /* Begin random global pointer block */
+    extern std::shared_ptr<okapi::ChassisController> chassis;
     extern std::shared_ptr<okapi::AsyncMotionProfileController> profile_controller;
+    /* End random global pointer block */
 }
 
 namespace bindings {
-    const auto INTAKE_BUTTON  = okapi::ControllerDigital::R1; ///TODO: Change intake button to actual value
+    const auto INTAKE_BUTTON  = okapi::ControllerDigital::R1; // TODO: Placeholder value
     const auto OUTTAKE_BUTTON = okapi::ControllerDigital::L1;
 
     const auto TOGGLE_INTAKE_POS = okapi::ControllerDigital::B;
