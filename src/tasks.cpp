@@ -25,15 +25,3 @@ const double liftkP = 1.0; // TODO: Replace these values with actual tuned PID l
 const double liftkI = 0.001;
 const double liftkD = 0.02;
 
-// TODO: Consider just moving this into auto code? Having it here seems really dumb
-void move_intake_task_fn(void * thisTaskPtr) {
-    auto * thisTask = (pros::Task *) thisTaskPtr;
-    auto intakePosController = okapi::AsyncControllerFactory::posPID(robot::INTAKE_POS_MOTOR_PORT_LEFT, liftkP, liftkI, liftkD);
-    int targetLoc = -600; // TODO: Change this to the actual target location of intakeDown
-
-    /// Assume that each task notification is a request to toggle up/down
-    while (thisTask->notify_take(true, TIMEOUT_MAX)) {
-        targetLoc = -targetLoc;
-        intakePosController.setTarget(targetLoc);
-    }
-}
