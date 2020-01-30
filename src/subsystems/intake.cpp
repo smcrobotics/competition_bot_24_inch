@@ -21,11 +21,13 @@ namespace intake {
 
         left_intake_pos_motor->tarePosition();
         right_intake_pos_motor->tarePosition();
-//        left_intake_pos_motor->move(127);
-//        right_intake_pos_motor->move(127);
     }
 
-    void moveArmsToPosition(intake::Position position) {
+    void update() {
+
+    }
+
+    void moveArmsToPosition(intake::IntakePosition position) {
         if (position == UP) {
             right_intake_pos_motor->moveAbsolute(robot::INTAKE_UP_POS_RIGHT, 120);
             left_intake_pos_motor->moveAbsolute(robot::INTAKE_UP_POS_LEFT, 120);
@@ -33,25 +35,16 @@ namespace intake {
             right_intake_pos_motor->moveAbsolute(robot::INTAKE_DOWN_POS, 80);
             left_intake_pos_motor->moveAbsolute(robot::INTAKE_DOWN_POS, 80);
         }
-
-
-//        if (position == UP) {
-//            left_intake_pos_motor->move(25);
-//            right_intake_pos_motor->move(25);
-//        } else if (position == DOWN) {
-//            left_intake_pos_motor->move(0);
-//            right_intake_pos_motor->move(0);
-//        }
     }
 
     void printPos() {
-//        std::cout << "left: " << left_intake_pos_motor->getPosition() << std::endl;
-//        std::cout << "right: " << right_intake_pos_motor->getPosition() << std::endl;
+        std::cout << "Left intake_pos motor position: " << left_intake_pos_motor->getPosition() << std::endl;
+        std::cout << "Right intake_pos motor position: " << right_intake_pos_motor->getPosition() << std::endl;
     }
 
     void setIntakeVelocity(int percent) {
         float voltage = (percent / 100.0f) * 127;
-        left_intake_motor->move((int) voltage);
-        right_intake_motor->move((int) voltage);
+        left_intake_motor->moveVoltage((int) voltage);
+        right_intake_motor->moveVoltage((int) voltage);
     }
 }
