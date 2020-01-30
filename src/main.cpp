@@ -1,3 +1,7 @@
+#include <unistd.h>
+#define chdir f_chdir
+
+
 #include "main.h"
 
 #include "smc/robot.h"
@@ -10,10 +14,10 @@ using std::endl;
 
 typedef okapi::ControllerButton Button;
 
-/// Begin forward declaration block
+/* Begin forward declaration block */
 std::shared_ptr<okapi::AsyncMotionProfileController> robot::profile_controller;
-std::shared_ptr<okapi::ChassisControllerIntegrated> robot::chassis;
-/// End forward declaration block
+std::shared_ptr<okapi::ChassisController> robot::chassis;
+/* End forward declaration block */
 
 
 /**
@@ -39,26 +43,22 @@ void on_center_button() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-    robot::chassis = ChassisControllerFactory::createPtr(
-            okapi::MotorGroup{robot::BACK_LEFT_DRIVE_MOTOR_PORT, robot::FRONT_LEFT_DRIVE_MOTOR_PORT},
-            okapi::MotorGroup{robot::BACK_RIGHT_DRIVE_MOTOR_PORT, robot::FRONT_RIGHT_DRIVE_MOTOR_PORT},
-            AbstractMotor::gearset::green, {4_in, 14_in} // TODO: Chassis
-    );
-    robot::profile_controller = std::make_shared<AsyncMotionProfileController>(
-            TimeUtilFactory::create(),
-            1.0, 0.5, 1.5,
-            robot::chassis->getChassisModel(),
-            robot::chassis->getChassisScales(),
-            robot::chassis->getGearsetRatioPair()
-    );
+    robot::chassis =
+            ChassisControllerBuilder().withMotors(
+                    okapi::MotorGroup{robot::BACK_LEFT_DRIVE_MOTOR_PORT, robot::FRONT_LEFT_DRIVE_MOTOR_PORT},
+                    okapi::MotorGroup{robot::BACK_RIGHT_DRIVE_MOTOR_PORT, robot::FRONT_RIGHT_DRIVE_MOTOR_PORT})
+            .withDimensions(AbstractMotor::gearset::green, ChassisScales{{4_in, 24_in}, okapi::imev5GreenTPR})
+            .build();
+
+    robot::profile_controller = okapi::AsyncMotionProfileControllerBuilder()
+            .withLimits({1.0, 0.5, 1.5})
+            .withOutput(robot::chassis)
+            .buildMotionProfileController();
 
 
-
-//    robot::chassis->setBrakeMode(okapi::Motor::brakeMode::brake);
     robot::profile_controller->generatePath({
-        Point{0_ft, 0_ft, 0_deg},
-        Point{12_in, 12_in, 0_deg}},
-                "A" // Profile name
+        {0_ft, 0_ft, 0_deg},
+        {12_in, 12_in, 0_deg}},"A" // Profile name
     );
 }
 
@@ -97,10 +97,10 @@ void autonomous() {
 //    int timeout = 10;
 //    pros::Task myTask(intake_task_fn, (void*) &timeout, "My Task");kd
 
-    robot::chassis->setBrakeMode(constants::OKAPI_BRAKE);
+    robot::chassis->getModel()->setBrakeMode(constants::OKAPI_BRAKE);
     robot::profile_controller->setTarget("A");
     robot::profile_controller->waitUntilSettled();
-    robot::chassis->setBrakeMode(constants::OKAPI_COAST);
+    robot::chassis->getModel()->setBrakeMode(constants::OKAPI_COAST);
 }
 
 /**
@@ -134,10 +134,10 @@ void initBindings(std::vector<Binding *> & bind_list) {
 
     // Arm position bindings
     bind_list.emplace_back(new Binding(Button(bindings::INTAKE_POS_UP), []() {
-        intake::moveArmsToPosition(intake::Position::UP);
+        intake::moveArmsToPosition(intake::IntakePosition::UP);
     }, nullptr, nullptr));
     bind_list.emplace_back(new Binding(Button(bindings::INTAKE_POS_DOWN), []() {
-        intake::moveArmsToPosition(intake::Position::DOWN);
+        intake::moveArmsToPosition(intake::IntakePosition::DOWN);
     }, nullptr, nullptr));
 
     // TODO: Remove this before competition
@@ -159,13 +159,13 @@ void opcontrol() {
     bind_list.emplace_back(new Binding(okapi::ControllerButton(bindings::DRIVE_BRAKE_TOGGLE), nullptr,
             [isBrake, master]() mutable {
         isBrake = !isBrake;
-        robot::chassis->setBrakeMode(isBrake ? constants::OKAPI_BRAKE : constants::OKAPI_COAST);
+        robot::chassis->getModel()->setBrakeMode(isBrake ? constants::OKAPI_BRAKE : constants::OKAPI_COAST);
         master.setText(0, 0, isBrake ? "Brake mode on " : "Brake mode off");
         }, nullptr));
 
     
     cout << "Initialization finished, entering drive loop" << endl;
-    while (!pros::competition::is_disabled()) { // TODO: Figure out if this works?
+    while (true) {
         drive::opControl(master);
         
         for (Binding * b : bind_list)
