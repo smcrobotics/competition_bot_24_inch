@@ -141,7 +141,7 @@ void initBindings(std::vector<Binding *> & bind_list) {
     }, nullptr, nullptr));
 
     // Toggle tray binding
-    bind_list.emplace_back(new Binding(Button(bindings::TOGGLE_TRAY_POS), tray::togglePosition, nullptr, nullptr));
+    bind_list.emplace_back(new Binding(Button(bindings::PLACE_STACK), tray::togglePosition, nullptr, nullptr));
 
     // TODO: Remove this before competition
     bind_list.emplace_back(new Binding(okapi::ControllerButton(okapi::ControllerDigital::Y), autonomous, nullptr, nullptr)); // Bind for auto test

@@ -15,9 +15,8 @@ namespace tray {
     void init();
     void update();
 
-    void moveTrayToPosition(TrayPosition pos);
+    void moveTrayToPosition(TrayPosition pos, bool blocking);
     void togglePosition();
-    void placeStack();
 
     const int trayPosKP = 1; // TODO: Tune these PID values as well
     const int trayPosKI = 1;

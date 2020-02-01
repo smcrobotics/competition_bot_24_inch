@@ -31,7 +31,7 @@ namespace tray {
             limit_timeout--;
     }
 
-    void moveTrayToPosition(TrayPosition pos) {
+    void moveTrayToPosition(TrayPosition pos, bool blocking) {
         if (pos == UP) {
             tray_position_motor->moveAbsolute(robot::TRAY_MOTOR_POS_UP, 5);
             limit_timeout = 40;
@@ -40,9 +40,14 @@ namespace tray {
             tray_position_motor->moveAbsolute(0, 120);
             current_pos = DOWN;
         }
+
+        if (blocking) {
+            while (!tray_position_motor->isStopped())
+                pros::delay(10);
+        }
     }
 
     void togglePosition() {
-        moveTrayToPosition((TrayPosition) !current_pos);
+        moveTrayToPosition((TrayPosition) !current_pos, false);
     }
 }
