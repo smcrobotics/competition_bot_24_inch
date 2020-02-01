@@ -47,6 +47,11 @@ namespace tray {
         }
     }
 
+    void setTrayVelocity(int percent) {
+        float voltage = (percent / 100.0f) * 12000;
+        tray_position_motor->moveVoltage((int) voltage);
+    }
+
     void togglePosition() {
         moveTrayToPosition((TrayPosition) !current_pos, false);
     }

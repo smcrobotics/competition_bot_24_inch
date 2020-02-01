@@ -52,13 +52,13 @@ namespace bindings {
 
     const auto TOGGLE_INTAKE_POS = okapi::ControllerDigital::B;
     const auto INTAKE_POS_UP = okapi::ControllerDigital::up;
-    const auto INTAKE_POS_DOWN = okapi::ControllerDigital::left;
+    const auto INTAKE_POS_DOWN = okapi::ControllerDigital::down;
 
     const auto PLACE_STACK = okapi::ControllerDigital::A;
-    const auto LOWER_TRAY = okapi::ControllerDigital::down;
-    const auto RAISE_TRAY = okapi::ControllerDigital::right;
+    const auto LOWER_TRAY = okapi::ControllerDigital::right;
+    const auto RAISE_TRAY = okapi::ControllerDigital::left;
 
-    const auto DRIVE_BRAKE_TOGGLE = okapi::ControllerDigital::X;
+    const auto DRIVE_BRAKE_TOGGLE = okapi::ControllerDigital::B;
 }
 
 namespace constants {

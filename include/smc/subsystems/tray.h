@@ -16,6 +16,7 @@ namespace tray {
     void update();
 
     void moveTrayToPosition(TrayPosition pos, bool blocking);
+    void setTrayVelocity(int percent);
     void togglePosition();
 
     const int trayPosKP = 1; // TODO: Tune these PID values as well

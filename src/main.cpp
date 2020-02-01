@@ -120,14 +120,14 @@ void autonomous() {
 void initBindings(std::vector<Binding *> & bind_list) {
     // Intake hold binding
     bind_list.emplace_back(new Binding(okapi::ControllerButton(bindings::INTAKE_BUTTON), []() {
-        intake::setIntakeVelocity(100);
+        intake::setIntakeVelocity(-100);
     }, []() {
         intake::setIntakeVelocity(0);
     }, nullptr));
 
     // Outtake hold binding
     bind_list.emplace_back(new Binding(okapi::ControllerButton(bindings::OUTTAKE_BUTTON), []() {
-        intake::setIntakeVelocity(-100);
+        intake::setIntakeVelocity(100);
     }, []() {
         intake::setIntakeVelocity(0);
     }, nullptr));
@@ -142,6 +142,16 @@ void initBindings(std::vector<Binding *> & bind_list) {
 
     // Toggle tray binding
     bind_list.emplace_back(new Binding(Button(bindings::PLACE_STACK), tray::togglePosition, nullptr, nullptr));
+    bind_list.emplace_back(new Binding(Button(bindings::RAISE_TRAY), []() {
+        tray::setTrayVelocity(60);
+    }, []() {
+        tray::setTrayVelocity(0);
+    }, nullptr));
+    bind_list.emplace_back(new Binding(Button(bindings::LOWER_TRAY), []() {
+        tray::setTrayVelocity(-60);
+    }, []() {
+        tray::setTrayVelocity(0);
+    }, nullptr));
 
     // TODO: Remove this before competition
     //bind_list.emplace_back(new Binding(okapi::ControllerButton(okapi::ControllerDigital::Y), autonomous, nullptr, nullptr)); // Bind for auto test
