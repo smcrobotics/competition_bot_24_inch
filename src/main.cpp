@@ -47,18 +47,21 @@ void initialize() {
             ChassisControllerBuilder().withMotors(
                     okapi::MotorGroup{robot::BACK_LEFT_DRIVE_MOTOR_PORT, robot::FRONT_LEFT_DRIVE_MOTOR_PORT},
                     okapi::MotorGroup{robot::BACK_RIGHT_DRIVE_MOTOR_PORT, robot::FRONT_RIGHT_DRIVE_MOTOR_PORT})
-            .withDimensions(AbstractMotor::gearset::green, ChassisScales{{4_in, 24_in}, okapi::imev5GreenTPR})
+            .withDimensions(AbstractMotor::gearset::green, ChassisScales{{4_in, 7.5_in}, okapi::imev5GreenTPR})
             .build();
+    robot::chassis->getModel()->setBrakeMode(constants::OKAPI_BRAKE);
+    intake::init();
+    tray::init();
 
     robot::profile_controller = okapi::AsyncMotionProfileControllerBuilder()
-            .withLimits({1.0, 0.5, 1.5})
+            .withLimits({2.0, 0.75, 1})
             .withOutput(robot::chassis)
             .buildMotionProfileController();
 
 
     robot::profile_controller->generatePath({
-        {0_ft, 0_ft, 0_deg},
-        {12_in, 12_in, 0_deg}},"A" // Profile name
+        {0_in, 0_in, 0_deg},
+        {5_ft, 0_in, 0_deg}}, "A" // Profile name
     );
 }
 
@@ -94,12 +97,17 @@ void competition_initialize() {}
 
 
 void autonomous() {
-//    int timeout = 10;
-//    pros::Task myTask(intake_task_fn, (void*) &timeout, "My Task");kd
-
     robot::chassis->getModel()->setBrakeMode(constants::OKAPI_BRAKE);
     robot::profile_controller->setTarget("A");
     robot::profile_controller->waitUntilSettled();
+
+    intake::setIntakeVelocity(100);
+    robot::chassis->getModel()->tank(-500, -500);
+    pros::delay(3500);
+    intake::setIntakeVelocity(0);
+    robot::chassis->getModel()->tank(0, 0);
+
+
     robot::chassis->getModel()->setBrakeMode(constants::OKAPI_COAST);
 }
 
@@ -154,7 +162,7 @@ void initBindings(std::vector<Binding *> & bind_list) {
     }, nullptr));
 
     // TODO: Remove this before competition
-    //bind_list.emplace_back(new Binding(okapi::ControllerButton(okapi::ControllerDigital::Y), autonomous, nullptr, nullptr)); // Bind for auto test
+//    bind_list.emplace_back(new Binding(okapi::ControllerButton(okapi::ControllerDigital::Y), autonomous, nullptr, nullptr)); // Bind for auto test
     // Note: Auto bind is blocking
     /** End bind block **/
 }
@@ -163,8 +171,6 @@ void initBindings(std::vector<Binding *> & bind_list) {
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 void opcontrol() {
     okapi::Controller master(okapi::ControllerId::master);
-    intake::init();
-    tray::init();
 
     bool isBrake = false;
     std::vector<Binding *> bind_list;
