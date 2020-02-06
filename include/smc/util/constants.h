@@ -10,8 +10,8 @@
 using namespace okapi;
 namespace robot {
     /* Begin drive motor block */
-    const int FRONT_LEFT_DRIVE_MOTOR_PORT = 0;
-    const int FRONT_RIGHT_DRIVE_MOTOR_PORT = 0;
+    const int FRONT_LEFT_DRIVE_MOTOR_PORT = 18;
+    const int FRONT_RIGHT_DRIVE_MOTOR_PORT = -17;
     const int BACK_LEFT_DRIVE_MOTOR_PORT = 13;
     const int BACK_RIGHT_DRIVE_MOTOR_PORT = -12;
     /* End drive motor block */

@@ -49,7 +49,6 @@ void initialize() {
                     okapi::MotorGroup{robot::BACK_RIGHT_DRIVE_MOTOR_PORT, robot::FRONT_RIGHT_DRIVE_MOTOR_PORT})
             .withDimensions(AbstractMotor::gearset::green, ChassisScales{{4_in, 7.5_in}, okapi::imev5GreenTPR})
             .build();
-    robot::chassis->getModel()->setBrakeMode(constants::OKAPI_BRAKE);
     intake::init();
     tray::init();
 
@@ -59,6 +58,9 @@ void initialize() {
             .buildMotionProfileController();
 
 
+    // first point in list of waypoints gives robot's location with respect to origin
+    // second waypoint is first to be executed
+    // TODO: check if x axis is forward, y axis is to the right?
     robot::profile_controller->generatePath({
         {0_in, 0_in, 0_deg},
         {5_ft, 0_in, 0_deg}}, "A" // Profile name
@@ -98,15 +100,18 @@ void competition_initialize() {}
 
 void autonomous() {
     robot::chassis->getModel()->setBrakeMode(constants::OKAPI_BRAKE);
+    
     robot::profile_controller->setTarget("A");
+    // block until path finishes
     robot::profile_controller->waitUntilSettled();
 
+    // velocities are inverted
     intake::setIntakeVelocity(100);
     robot::chassis->getModel()->tank(-500, -500);
+    // go back forward for 3.5 seconds
     pros::delay(3500);
     intake::setIntakeVelocity(0);
     robot::chassis->getModel()->tank(0, 0);
-
 
     robot::chassis->getModel()->setBrakeMode(constants::OKAPI_COAST);
 }
