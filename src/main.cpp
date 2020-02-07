@@ -60,7 +60,7 @@ void initialize() {
 
     // first point in list of waypoints gives robot's location with respect to origin
     // second waypoint is first to be executed
-    // TODO: check if x axis is forward, y axis is to the right?
+    // x axis is forward, y axis is to the left
     robot::profile_controller->generatePath({
         {0_in, 0_in, 0_deg},
         {5_ft, 0_in, 0_deg}}, "A" // Profile name
