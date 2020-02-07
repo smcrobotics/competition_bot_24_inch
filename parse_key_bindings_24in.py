@@ -34,6 +34,8 @@ with open('./24in_key_bindings.md', 'a') as output_file:
         else:
             output_file.write("N/A")
         output_file.write("\n")
+
+    output_file.write("\n")
     output_file.write("### Arrows\n")
     for button in arrows:
         output_file.write("- {}: ".format(button))
@@ -42,6 +44,8 @@ with open('./24in_key_bindings.md', 'a') as output_file:
         else:
             output_file.write("N/A")
         output_file.write("\n")
+    
+    output_file.write("\n")
     output_file.write("### Letters\n")
     for button in letters:
         output_file.write("- {}: ".format(button))
