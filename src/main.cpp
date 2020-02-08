@@ -165,7 +165,7 @@ void autonomous() {
 
     // // intake all cubes on the path
     // intake::setIntakeVelocity(-100); // intake velocity is inverted
-    // robot::profile_controller->setTarget("autonomous_path");
+    // robot::profile_controll/home/ariel/Documents/School/Robotics/competition_bot_15_incher->setTarget("autonomous_path");
     // robot::profile_controller->waitUntilSettled();
     // // stop intaking
     // intake::setIntakeVelocity(0); // intake velocity is inverted
@@ -229,14 +229,14 @@ void autonomous() {
 void initBindings(std::vector<Binding *> & bind_list) {
     // Intake hold binding
     bind_list.emplace_back(new Binding(okapi::ControllerButton(bindings::INTAKE_BUTTON), []() {
-        intake::setIntakeVelocity(-100);
+        intake::setIntakeVelocity(-70);
     }, []() {
         intake::setIntakeVelocity(0);
     }, nullptr));
 
     // Outtake hold binding
     bind_list.emplace_back(new Binding(okapi::ControllerButton(bindings::OUTTAKE_BUTTON), []() {
-        intake::setIntakeVelocity(100);
+        intake::setIntakeVelocity(70);
     }, []() {
         intake::setIntakeVelocity(0);
     }, nullptr));
