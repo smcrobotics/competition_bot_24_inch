@@ -66,6 +66,9 @@ namespace constants {
 
     const auto OKAPI_BRAKE = okapi::AbstractMotor::brakeMode::brake;
     const auto OKAPI_COAST = okapi::AbstractMotor::brakeMode::coast;
+
+    const int VELOCITY_AUTONOMOUS = 200;
 }
+
 
 #endif //ROBOT_CODE_CONSTANTS_H

@@ -47,24 +47,82 @@ void initialize() {
             ChassisControllerBuilder().withMotors(
                     okapi::MotorGroup{robot::BACK_LEFT_DRIVE_MOTOR_PORT, robot::FRONT_LEFT_DRIVE_MOTOR_PORT},
                     okapi::MotorGroup{robot::BACK_RIGHT_DRIVE_MOTOR_PORT, robot::FRONT_RIGHT_DRIVE_MOTOR_PORT})
-            .withDimensions(AbstractMotor::gearset::green, ChassisScales{{4_in, 7.5_in}, okapi::imev5GreenTPR})
+            .withDimensions(AbstractMotor::gearset::green, ChassisScales{{4_in, 16.1_in}, okapi::imev5GreenTPR})
             .build();
+
     intake::init();
     tray::init();
 
     robot::profile_controller = okapi::AsyncMotionProfileControllerBuilder()
-            .withLimits({2.0, 0.75, 1})
+            .withLimits({.5, .5, .5})
             .withOutput(robot::chassis)
             .buildMotionProfileController();
 
 
-    // first point in list of waypoints gives robot's location with respect to origin
-    // second waypoint is first to be executed
-    // x axis is forward, y axis is to the left
+    // // first point in list of waypoints gives robot's location with respect to origin
+    // // second waypoint is first to be executed
+    // // x axis is forward, y axis is to the left
+    // robot::profile_controller->generatePath({
+    //     {1.5_ft, 0_in, 90_deg},
+    //     {0_in, 1.5_ft, 180_deg},
+    //     {-1.5_ft, 0_in, 270_deg},
+    //     {0_in, -1.5_ft, 0_deg},
+    //     {1.5_ft, 0_in, 90_deg}}, "circle" // Profile name
+    // );
+
+    // // first point in list of waypoints gives robot's location with respect to origin
+    // // second waypoint is first to be executed
+    // // x axis is forward, y axis is to the left
+    // robot::profile_controller->generatePath({
+    //     {0_ft, 0_in, 0_deg},
+    //     {1_ft, 0_in, 0_deg}}, "straight" // Profile name
+    // );
+
+    // robot::profile_controller->generatePath({
+    //     {0_ft, 0_in, 0_deg},
+    //     {1_ft, 0_in, 0_deg},
+    //     {2_ft, 1_ft, 90_deg},
+    //     {2_ft, 2_ft, 90_deg}}, "turn_left" // Profile name
+    // );
+
+    // robot::profile_controller->generatePath({
+    //     {0_ft, 0_in, 0_deg},
+    //     {5.5_ft, 0_in, 0_deg},
+    //     {6.5_ft, -1.5_ft, 270_deg},
+    //     {6.5_ft, -12.5_ft, 270_deg},
+    //     {7.5_ft, -13.5_ft, 0_deg},
+    //     {14.5_ft, -13.5_ft, 0_deg}}, "drive_through_business" // Profile name
+    // );
+
+    // robot::profile_controller->generatePath({
+    //     {0_ft, 0_in, 0_deg},
+    //     {5.5_ft, 0_in, 0_deg},
+    //     {6.5_ft, -1.5_ft, 270_deg},
+    //     {6.5_ft, -9.5_ft, 270_deg},
+    //     {7.5_ft, -13.5_ft, 0_deg},
+    //     {14.5_ft, -13.5_ft, 0_deg}}, "drive_through_business" // Profile name
+    // );
+
     robot::profile_controller->generatePath({
-        {0_in, 0_in, 0_deg},
-        {5_ft, 0_in, 0_deg}}, "A" // Profile name
+        {0_ft, 0_in, 0_deg},
+        {80_in, -86_in, 90_deg}}, "drive_through_business" // Profile name
     );
+
+    /*
+    flag to indicate whether robot starts on red side or blue side
+    if on starts_on_red_side, starts_on_red_side is true, else, starts_on_red_side = false
+    this is used to specify path to use in the autonomous routine
+    */
+    bool starts_on_red_side = true;
+    // if (starts_on_red_side) {
+    //     robot::profile_controller->generatePath({
+    //         {0_ft, 0_in, 0_deg}}, "autonomous_path" // Profile name
+    //     );
+    // } else {
+    //     robot::profile_controller->generatePath({
+    //         {0_ft, 0_in, 0_deg}}, "autonomous_path" // Profile name
+    //     );
+    // }
 }
 
 /**
@@ -100,18 +158,56 @@ void competition_initialize() {}
 
 void autonomous() {
     robot::chassis->getModel()->setBrakeMode(constants::OKAPI_BRAKE);
+
+    /*
+    autonomous routine
+    */
+
+    // // intake all cubes on the path
+    // intake::setIntakeVelocity(-100); // intake velocity is inverted
+    // robot::profile_controller->setTarget("autonomous_path");
+    // robot::profile_controller->waitUntilSettled();
+    // // stop intaking
+    // intake::setIntakeVelocity(0); // intake velocity is inverted
+    // tray::moveTrayToPosition(tray::TrayPosition::UP);
+
+    // //use robot::chassis->moveDistance(distance); to move backwards if needed
+    // //Use 200rpm as max velocity when using the moveDistance function, least jerky
     
-    robot::profile_controller->setTarget("A");
+    // // get default val for velocity and reset it after calling moveDistance
+    // double vel = robot::chassis->getModel()->getMaxVelocity();
+    // robot::chassis->setMaxVelocity(constants::VELOCITY_AUTONOMOUS);
+    // robot::chassis->moveDistance(-1_ft);
+    // // reset maxVelocity to default val
+    // robot::chassis->setMaxVelocity(vel);
+
+    /*
+    end autonomous routine
+    */
+
+    /*
+    old autonomous routine
+    */
+
+    // robot::profile_controller->setTarget("A");
+    // // block until path finishes
+    // robot::profile_controller->waitUntilSettled();
+
+    // // velocities are inverted
+    // intake::setIntakeVelocity(100);
+    // robot::chassis->getModel()->tank(-500, -500);
+    // // go back forward for 3.5 seconds
+    // pros::delay(3500);
+    // intake::setIntakeVelocity(0);
+    // robot::chassis->getModel()->tank(0, 0);
+
+    /*
+    end old autonomous routine
+    */
+
+    robot::profile_controller->setTarget("drive_through_business", true, false);
     // block until path finishes
     robot::profile_controller->waitUntilSettled();
-
-    // velocities are inverted
-    intake::setIntakeVelocity(100);
-    robot::chassis->getModel()->tank(-500, -500);
-    // go back forward for 3.5 seconds
-    pros::delay(3500);
-    intake::setIntakeVelocity(0);
-    robot::chassis->getModel()->tank(0, 0);
 
     robot::chassis->getModel()->setBrakeMode(constants::OKAPI_COAST);
 }
@@ -167,7 +263,7 @@ void initBindings(std::vector<Binding *> & bind_list) {
     }, nullptr));
 
     // TODO: Remove this before competition
-//    bind_list.emplace_back(new Binding(okapi::ControllerButton(okapi::ControllerDigital::Y), autonomous, nullptr, nullptr)); // Bind for auto test
+    bind_list.emplace_back(new Binding(okapi::ControllerButton(okapi::ControllerDigital::Y), autonomous, nullptr, nullptr)); // Bind for auto test
     // Note: Auto bind is blocking
     /** End bind block **/
 }

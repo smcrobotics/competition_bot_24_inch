@@ -43,7 +43,7 @@ namespace intake {
     }
 
     void setIntakeVelocity(int percent) {
-        float voltage = (percent / 100.0f) * 12000;
+        float voltage = (percent / 100.0f) * 6000;
         left_intake_motor->moveVoltage((int) voltage);
         right_intake_motor->moveVoltage((int) voltage);
     }
