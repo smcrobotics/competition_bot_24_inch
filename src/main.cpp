@@ -165,7 +165,7 @@ void autonomous() {
 
     // // intake all cubes on the path
     // intake::setIntakeVelocity(-100); // intake velocity is inverted
-    // robot::profile_controll/home/ariel/Documents/School/Robotics/competition_bot_15_incher->setTarget("autonomous_path");
+    // robot::profile_controller->setTarget("autonomous_path");
     // robot::profile_controller->waitUntilSettled();
     // // stop intaking
     // intake::setIntakeVelocity(0); // intake velocity is inverted
