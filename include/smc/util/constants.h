@@ -47,7 +47,8 @@ namespace robot {
 }
 
 namespace bindings {
-    const auto INTAKE_BUTTON  = okapi::ControllerDigital::R1; // TODO: Placeholder value
+    // TODO: when all buttons have been mapped, make a comment describing what each one does
+    const auto INTAKE_BUTTON  = okapi::ControllerDigital::R1;
     const auto OUTTAKE_BUTTON = okapi::ControllerDigital::L1;
 
     const auto TOGGLE_INTAKE_POS = okapi::ControllerDigital::B;
