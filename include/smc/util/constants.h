@@ -11,8 +11,8 @@ using namespace okapi;
 namespace robot {
     /* Begin drive motor block */
     const int FRONT_LEFT_DRIVE_MOTOR_PORT = 18;
-    const int FRONT_RIGHT_DRIVE_MOTOR_PORT = -17;
-    const int BACK_LEFT_DRIVE_MOTOR_PORT = 13;
+    const int FRONT_RIGHT_DRIVE_MOTOR_PORT = -13;
+    const int BACK_LEFT_DRIVE_MOTOR_PORT = 19;
     const int BACK_RIGHT_DRIVE_MOTOR_PORT = -12;
     /* End drive motor block */
 
@@ -33,7 +33,7 @@ namespace robot {
 
 
     /* Begin tray block */
-    const int TRAY_POS_MOTOR_PORT = 19;
+    const int TRAY_POS_MOTOR_PORT = 1;
     const int TRAY_MOTOR_POS_UP = 140; // TODO: Placeholder value
 
     const char TRAY_POS_DOWN_LIMIT_SWITCH = 'H';

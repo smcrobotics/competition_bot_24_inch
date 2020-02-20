@@ -1,7 +1,7 @@
 ################################################################################
 ######################### User configurable parameters #########################
 builddocs: include/smc/util/constants.h
-        python parse_key_bindings_24in.py
+	python parse_key_bindings_24in.py
 
 # filename extensions
 CEXTS:=c
