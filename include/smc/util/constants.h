@@ -63,6 +63,7 @@ namespace bindings {
     const auto RAISE_TRAY = okapi::ControllerDigital::left;
 
     const auto DRIVE_BRAKE_TOGGLE = okapi::ControllerDigital::B;
+    const auto AUTO_STACK = okapi::ControllerDigital::X;
 }
 
 namespace constants {

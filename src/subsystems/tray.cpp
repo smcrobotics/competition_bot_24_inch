@@ -41,7 +41,7 @@ namespace tray {
             current_pos = DOWN;
         }
 
-        if (blocking) {
+        if (blocking) {//choose whether to block other tasks from performing
             while (!tray_position_motor->isStopped())
                 pros::delay(10);
         }

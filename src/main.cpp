@@ -52,6 +52,7 @@ void initialize() {
 
     intake::init();
     tray::init();
+    sideIndicate::init();
 
     robot::profile_controller = okapi::AsyncMotionProfileControllerBuilder()
             .withLimits({.5, .5, .5})
@@ -113,7 +114,7 @@ void initialize() {
     if on starts_on_red_side, starts_on_red_side is true, else, starts_on_red_side = false
     this is used to specify path to use in the autonomous routine
     */
-    bool starts_on_red_side = true;
+    bool starts_on_red_side = sideIndicate::getSide();
     // if (starts_on_red_side) {
     //     robot::profile_controller->generatePath({
     //         {0_ft, 0_in, 0_deg}}, "autonomous_path" // Profile name
@@ -261,10 +262,17 @@ void initBindings(std::vector<Binding *> & bind_list) {
     }, []() {
         tray::setTrayVelocity(0);
     }, nullptr));
+    bind_list.emplace_back(new Binding(Button(bindings::AUTO_STACK), [](){
+        tray::moveTrayToPosition(tray::TrayPosition::UP, true);
+        intake::setIntakeVelocity(-20);
+        robot::chassis->getModel()->tank(-0.2, -0.2);
+        pros::delay(2000);
+    }, nullptr, nullptr));
 
     // TODO: Remove this before competition
     bind_list.emplace_back(new Binding(okapi::ControllerButton(okapi::ControllerDigital::Y), autonomous, nullptr, nullptr)); // Bind for auto test
     // Note: Auto bind is blocking
+
     /** End bind block **/
 }
 
