@@ -13,10 +13,10 @@ namespace intake {
     std::unique_ptr<okapi::Motor> left_intake_pos_motor;
 
     void init() {
-        left_intake_motor = util::initMotor(robot::INTAKE_MOTOR_PORT_LEFT);
-        right_intake_motor = util::initMotor(robot::INTAKE_MOTOR_PORT_RIGHT);
-        left_intake_pos_motor = util::initMotor(robot::INTAKE_POS_MOTOR_PORT_LEFT);
-        right_intake_pos_motor = util::initMotor(robot::INTAKE_POS_MOTOR_PORT_RIGHT);
+        left_intake_motor = util::initMotor(robot::INTAKE_MOTOR_PORT_LEFT, okapi::AbstractMotor::gearset::blue);
+        right_intake_motor = util::initMotor(robot::INTAKE_MOTOR_PORT_RIGHT, okapi::AbstractMotor::gearset::blue);
+        left_intake_pos_motor = util::initMotor(robot::INTAKE_POS_MOTOR_PORT_LEFT, okapi::AbstractMotor::gearset::blue);
+        right_intake_pos_motor = util::initMotor(robot::INTAKE_POS_MOTOR_PORT_RIGHT, okapi::AbstractMotor::gearset::blues);
 
 
         left_intake_pos_motor->tarePosition();
