@@ -39,9 +39,6 @@ namespace robot {
     const char TRAY_POS_DOWN_LIMIT_SWITCH = 'H';
     /* End tray block */
 
-    /*Begin sideIndicate*/
-    const int SIDE_INDICATE_LIMIT_SWITCH_PORT = 'C'; //TODO: Placeholder value
-    /*End sideIndicate*/
 
     /* Begin random global pointer block */
     extern std::shared_ptr<okapi::ChassisController> chassis;
