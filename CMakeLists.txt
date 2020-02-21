@@ -285,10 +285,12 @@ add_executable(competition_bot_24_inch
     include/smc/tasks.h
     include/api.h
     include/main.h
+    include/smc/subsystems/sideIndicate.h
     src/subsystems/drive.cpp
     src/subsystems/intake.cpp
     src/subsystems/tray.cpp
     src/util/Binding.cpp
     src/util/util.cpp
     src/main.cpp
-    src/tasks.cpp)
+    src/tasks.cpp
+    src/subsystems/sideIndicate.cpp)
