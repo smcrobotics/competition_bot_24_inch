@@ -10,16 +10,16 @@
 using namespace okapi;
 namespace robot {
     /* Begin drive motor block */
-    const int FRONT_LEFT_DRIVE_MOTOR_PORT = 1;
-    const int FRONT_RIGHT_DRIVE_MOTOR_PORT = -10;
-    const int BACK_LEFT_DRIVE_MOTOR_PORT = 11;
-    const int BACK_RIGHT_DRIVE_MOTOR_PORT = -20;
+    const int FRONT_LEFT_DRIVE_MOTOR_PORT = 20;
+    const int FRONT_RIGHT_DRIVE_MOTOR_PORT = -11;
+    const int BACK_LEFT_DRIVE_MOTOR_PORT = 10;
+    const int BACK_RIGHT_DRIVE_MOTOR_PORT = -1;
     /* End drive motor block */
 
 
     /* Begin intake block */
-    const int INTAKE_MOTOR_PORT_LEFT = -2; // TODO: Placeholder value
-    const int INTAKE_MOTOR_PORT_RIGHT = 9; // TODO: Placeholder value
+    const int INTAKE_MOTOR_PORT_LEFT = -9; // TODO: Placeholder value
+    const int INTAKE_MOTOR_PORT_RIGHT = 2; // TODO: Placeholder value
     const int INTAKE_POS_MOTOR_PORT_LEFT = -10;
     const int INTAKE_POS_MOTOR_PORT_RIGHT = 1;
 
