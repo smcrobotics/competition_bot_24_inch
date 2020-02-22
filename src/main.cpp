@@ -237,7 +237,7 @@ void initBindings(std::vector<Binding *> & bind_list) {
 
     // Outtake hold binding
     bind_list.emplace_back(new Binding(okapi::ControllerButton(bindings::OUTTAKE_BUTTON), []() {
-        intake::setIntakeVelocity(70);
+        intake::setIntakeVelocity(100);
     }, []() {
         intake::setIntakeVelocity(0);
     }, nullptr));
@@ -272,7 +272,7 @@ void initBindings(std::vector<Binding *> & bind_list) {
     }, nullptr, nullptr));
 
     // TODO: Remove this before competition
-    bind_list.emplace_back(new Binding(okapi::ControllerButton(okapi::ControllerDigital::Y), autonomous, nullptr, nullptr)); // Bind for auto test
+//    bind_list.emplace_back(new Binding(okapi::ControllerButton(okapi::ControllerDigital::Y), autonomous, nullptr, nullptr)); // Bind for auto test
     // Note: Auto bind is blocking
 
     /** End bind block **/
@@ -302,6 +302,7 @@ void opcontrol() {
         for (Binding * b : bind_list)
             b->update();
 //        intake::printPos();
+        tray::printPos();
 
         pros::delay(1);
     }

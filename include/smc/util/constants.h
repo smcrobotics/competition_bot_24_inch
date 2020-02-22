@@ -18,13 +18,10 @@ namespace robot {
 
 
     /* Begin intake block */
-    const int INTAKE_MOTOR_PORT_LEFT = -9; // TODO: Placeholder value
-    const int INTAKE_MOTOR_PORT_RIGHT = 2; // TODO: Placeholder value
+    const int INTAKE_MOTOR_PORT_LEFT = -9;
+    const int INTAKE_MOTOR_PORT_RIGHT = 2;
     const int INTAKE_POS_MOTOR_PORT_LEFT = -10;
     const int INTAKE_POS_MOTOR_PORT_RIGHT = 1;
-
-    const char INTAKE_POS_LIMIT_SWITCH_TOP = 'A'; // TODO: Placeholder value
-    const char INTAKE_POS_LIMIT_SWITCH_BOTTOM = 'B'; //TODO: Placeholder value
 
     const float INTAKE_DOWN_POS = 0;
     const float INTAKE_UP_POS_LEFT = 910.0;
@@ -34,14 +31,14 @@ namespace robot {
 
     /* Begin tray block */
     const int TRAY_POS_MOTOR_PORT = 19;
-    const int TRAY_MOTOR_POS_UP = 140; // TODO: Placeholder value
+    const int TRAY_MOTOR_POS_UP = 750; // TODO: Placeholder value
 
     const char TRAY_POS_DOWN_LIMIT_SWITCH = 'H';
     /* End tray block */
 
-    /*Begin sideIndicate*/
+    /* Begin sideIndicate */
     const int SIDE_INDICATE_LIMIT_SWITCH_PORT = 'C'; //TODO: Placeholder value
-    /*End sideIndicate*/
+    /* End sideIndicate */
 
     /* Begin random global pointer block */
     extern std::shared_ptr<okapi::ChassisController> chassis;
