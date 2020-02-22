@@ -14,8 +14,11 @@ namespace tray {
 
     void init();
     void update();
+    void printPos();
 
     void moveTrayToPosition(TrayPosition pos, bool blocking);
+    void moveTrayToPosition(TrayPosition pos);
+
     void setTrayVelocity(int percent);
     void togglePosition();
 

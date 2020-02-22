@@ -5,6 +5,9 @@
 #include "smc/robot.h"
 #include "smc/subsystems/tray.h"
 
+using std::cout;
+using std::endl;
+
 namespace tray {
     int limit_timeout;
     TrayPosition current_pos;
@@ -31,6 +34,10 @@ namespace tray {
             limit_timeout--;
     }
 
+    void printPos() {
+        cout << "[POS] Tray motor position: " << tray_position_motor->getPosition() << endl;
+    }
+
     void moveTrayToPosition(TrayPosition pos, bool blocking) {
         if (pos == UP) {
             tray_position_motor->moveAbsolute(robot::TRAY_MOTOR_POS_UP, 5);
@@ -41,14 +48,18 @@ namespace tray {
             current_pos = DOWN;
         }
 
-        if (blocking) {//choose whether to block other tasks from performing
+        if (blocking) { // choose whether to block other tasks from performing
             while (!tray_position_motor->isStopped())
                 pros::delay(10);
         }
     }
 
+    void moveTrayToPosition(TrayPosition pos) {
+        moveTrayToPosition(pos, false);
+    }
+
     void setTrayVelocity(int percent) {
-        float voltage = (percent / 100.0f) * 12000;
+        float voltage = ((float) percent / 100.0f) * 12000;
         tray_position_motor->moveVoltage((int) voltage);
     }
 

@@ -60,7 +60,7 @@ void initialize() {
             .buildMotionProfileController();
 
 
-    // // first point in list of waypoints gives robot's location with respect to origin
+    /*// // first point in list of waypoints gives robot's location with respect to origin
     // // second waypoint is first to be executed
     // // x axis is forward, y axis is to the left
     // robot::profile_controller->generatePath({
@@ -104,26 +104,28 @@ void initialize() {
     //     {14.5_ft, -13.5_ft, 0_deg}}, "drive_through_business" // Profile name
     // );
 
-    robot::profile_controller->generatePath({
-        {0_ft, 0_in, 0_deg},
-        {80_in, -86_in, 90_deg}}, "drive_through_business" // Profile name
-    );
-
+//    robot::profile_controller->generatePath({
+//        {0_ft, 0_in, 0_deg},
+//        {80_in, -86_in, 90_deg}}, "drive_through_business" // Profile name
+//    );
+*/
     /*
     flag to indicate whether robot starts on red side or blue side
     if on starts_on_red_side, starts_on_red_side is true, else, starts_on_red_side = false
     this is used to specify path to use in the autonomous routine
     */
     bool starts_on_red_side = sideIndicate::getSide();
-    // if (starts_on_red_side) {
-    //     robot::profile_controller->generatePath({
-    //         {0_ft, 0_in, 0_deg}}, "autonomous_path" // Profile name
-    //     );
-    // } else {
-    //     robot::profile_controller->generatePath({
-    //         {0_ft, 0_in, 0_deg}}, "autonomous_path" // Profile name
-    //     );
-    // }
+     if (starts_on_red_side) {
+         robot::profile_controller->generatePath({
+             {0_ft, 0_in, 0_deg},
+             {1_ft, 0_in, 0_deg}}, "autonomous_path" // Profile name
+         );
+     } else {
+         robot::profile_controller->generatePath({
+             {0_ft, 0_in, 0_deg},
+             {1_ft, 0_in, 0_deg}}, "autonomous_path" // Profile name
+         );
+     }
 }
 
 /**
@@ -155,8 +157,6 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-
-
 void autonomous() {
     robot::chassis->getModel()->setBrakeMode(constants::OKAPI_BRAKE);
 
@@ -164,23 +164,23 @@ void autonomous() {
     autonomous routine
     */
 
-    // // intake all cubes on the path
-    // intake::setIntakeVelocity(-100); // intake velocity is inverted
-    // robot::profile_controller->setTarget("autonomous_path");
-    // robot::profile_controller->waitUntilSettled();
-    // // stop intaking
-    // intake::setIntakeVelocity(0); // intake velocity is inverted
-    // tray::moveTrayToPosition(tray::TrayPosition::UP);
+     // intake all cubes on the path
+    intake::setIntakeVelocity(-100); // intake velocity is inverted
+    robot::profile_controller->setTarget("autonomous_path");
+    robot::profile_controller->waitUntilSettled();
+    // stop intaking
+    intake::setIntakeVelocity(0); // intake velocity is inverted
+    tray::moveTrayToPosition(tray::TrayPosition::UP);
 
-    // //use robot::chassis->moveDistance(distance); to move backwards if needed
-    // //Use 200rpm as max velocity when using the moveDistance function, least jerky
-    
-    // // get default val for velocity and reset it after calling moveDistance
-    // double vel = robot::chassis->getModel()->getMaxVelocity();
-    // robot::chassis->setMaxVelocity(constants::VELOCITY_AUTONOMOUS);
-    // robot::chassis->moveDistance(-1_ft);
-    // // reset maxVelocity to default val
-    // robot::chassis->setMaxVelocity(vel);
+    //use robot::chassis->moveDistance(distance); to move backwards if needed
+    //Use 200rpm as max velocity when using the moveDistance function, least jerky
+
+    // get default val for velocity and reset it after calling moveDistance
+    double vel = robot::chassis->getModel()->getMaxVelocity();
+    robot::chassis->setMaxVelocity(constants::VELOCITY_AUTONOMOUS);
+    robot::chassis->moveDistance(-1_ft);
+    // reset maxVelocity to default val
+    robot::chassis->setMaxVelocity(vel);
 
     /*
     end autonomous routine
@@ -189,7 +189,7 @@ void autonomous() {
     /*
     old autonomous routine
     */
-
+/*
     // robot::profile_controller->setTarget("A");
     // // block until path finishes
     // robot::profile_controller->waitUntilSettled();
@@ -201,7 +201,7 @@ void autonomous() {
     // pros::delay(3500);
     // intake::setIntakeVelocity(0);
     // robot::chassis->getModel()->tank(0, 0);
-
+*/
     /*
     end old autonomous routine
     */
@@ -257,14 +257,16 @@ void initBindings(std::vector<Binding *> & bind_list) {
     }, []() {
         tray::setTrayVelocity(0);
     }, nullptr));
+
     bind_list.emplace_back(new Binding(Button(bindings::LOWER_TRAY), []() {
         tray::setTrayVelocity(-60);
     }, []() {
         tray::setTrayVelocity(0);
     }, nullptr));
+
     bind_list.emplace_back(new Binding(Button(bindings::AUTO_STACK), [](){
-        tray::moveTrayToPosition(tray::TrayPosition::UP, true);
-        intake::setIntakeVelocity(-20);
+        tray::moveTrayToPosition(tray::TrayPosition::UP, false);
+        intake::setIntakeVelocity(7);
         robot::chassis->getModel()->tank(-0.2, -0.2);
         pros::delay(2000);
     }, nullptr, nullptr));
