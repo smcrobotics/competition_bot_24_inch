@@ -62,75 +62,25 @@ void initialize() {
 
     /*// // first point in list of waypoints gives robot's location with respect to origin
     // // second waypoint is first to be executed
-    // // x axis is forward, y axis is to the left
-    // robot::profile_controller->generatePath({
-    //     {1.5_ft, 0_in, 90_deg},
-    //     {0_in, 1.5_ft, 180_deg},
-    //     {-1.5_ft, 0_in, 270_deg},
-    //     {0_in, -1.5_ft, 0_deg},
-    //     {1.5_ft, 0_in, 90_deg}}, "circle" // Profile name
-    // );
+    // // x axis is forward, y axis is to the left */
 
-    // // first point in list of waypoints gives robot's location with respect to origin
-    // // second waypoint is first to be executed
-    // // x axis is forward, y axis is to the left
-    // robot::profile_controller->generatePath({
-    //     {0_ft, 0_in, 0_deg},
-    //     {1_ft, 0_in, 0_deg}}, "straight" // Profile name
-    // );
-
-    // robot::profile_controller->generatePath({
-    //     {0_ft, 0_in, 0_deg},
-    //     {1_ft, 0_in, 0_deg},
-    //     {2_ft, 1_ft, 90_deg},
-    //     {2_ft, 2_ft, 90_deg}}, "turn_left" // Profile name
-    // );
-
-    // robot::profile_controller->generatePath({
-    //     {0_ft, 0_in, 0_deg},
-    //     {5.5_ft, 0_in, 0_deg},
-    //     {6.5_ft, -1.5_ft, 270_deg},
-    //     {6.5_ft, -12.5_ft, 270_deg},
-    //     {7.5_ft, -13.5_ft, 0_deg},
-    //     {14.5_ft, -13.5_ft, 0_deg}}, "drive_through_business" // Profile name
-    // );
-
-    // robot::profile_controller->generatePath({
-    //     {0_ft, 0_in, 0_deg},
-    //     {5.5_ft, 0_in, 0_deg},
-    //     {6.5_ft, -1.5_ft, 270_deg},
-    //     {6.5_ft, -9.5_ft, 270_deg},
-    //     {7.5_ft, -13.5_ft, 0_deg},
-    //     {14.5_ft, -13.5_ft, 0_deg}}, "drive_through_business" // Profile name
-    // );
-
-    //    robot::profile_controller->generatePath({
-    //        {0_ft, 0_in, 0_deg},
-    //        {80_in, -86_in, 90_deg}}, "drive_through_business" // Profile name
-    //    );
-    */
-
-    /*
-    flag to indicate whether robot starts on red side or blue side
-    if on starts_on_red_side, starts_on_red_side is true, else, starts_on_red_side = false
-    this is used to specify path to use in the autonomous routine
-    */
-    // bool starts_on_red_side = sideIndicate::getSide();
-    //  if (starts_on_red_side) {
-    //      robot::profile_controller->generatePath({
-    //          {0_ft, 0_in, 0_deg},
-    //          {1_ft, 0_in, 0_deg}}, "autonomous_path" // Profile name
-    //      );
-    //  } else {
-    //      robot::profile_controller->generatePath({
-    //          {0_ft, 0_in, 0_deg},
-    //          {1_ft, 0_in, 0_deg}}, "autonomous_path" // Profile name
-    //      );
-    //  }
     robot::profile_controller->generatePath({
-         {0_ft, 0_in, 0_deg},
-         {2_ft, 0_in, 0_deg}}, "autonomous_path" // Profile name
-     );
+        {268.5_cm, 0_cm, 180_deg},
+        {350.3_in, 0_cm, 180_deg}}, "forward"
+    );
+
+    robot::profile_controller->generatePath({
+        {268.5_cm, 0_cm, 180_deg},
+        {246.6_cm, 126.7_cm, 0_deg},
+        {178.6_cm, 126.7_cm, 0_deg},
+        {67_cm, 126.7_cm, 0_deg}
+    }, "toCubes");
+
+    robot::profile_controller->generatePath({
+        {268.5_cm, 0_cm, 180_deg},
+        {350.3_cm, 0_cm, 180_deg}
+    }, "toScoreZone");
+
 }
 
 /**
@@ -139,7 +89,6 @@ void initialize() {
  * the robot is enabled, this task will exit.
  */
 void disabled() {}
-
 /**
  * Runs after initialize(), and before autonomous when connected to the Field
  * Management System or the VEX Competition Switch. This is intended for
@@ -165,45 +114,22 @@ void competition_initialize() {}
 void autonomous() {
     robot::chassis->getModel()->setBrakeMode(constants::OKAPI_BRAKE);
 
-    /*
-    autonomous routine
-    */
-
-    //  // intake all cubes on the path
-    // intake::setIntakeVelocity(-100); // intake velocity is inverted
-    // robot::profile_controller->setTarget("autonomous_path");
-    // robot::profile_controller->waitUntilSettled();
-    // // stop intaking
-    // intake::setIntakeVelocity(0); // intake velocity is inverted
-    // tray::deployTray();
-
-    /*
-    end autonomous routine
-    */
-
-    /*
-    DEFAULT autonomous routine
-    */
-
-    robot::profile_controller->setTarget("autonomous_path");
-    // block until path finishes
+    robot::profile_controller->setTarget("forward");
+    robot::profile_controller->waitUntilSettled();
+    robot::profile_controller->setTarget("forward", true);
     robot::profile_controller->waitUntilSettled();
 
-    // velocities are inverted
-    // intake::setIntakeVelocity(100);
-    // robot::chassis->getModel()->tank(-500, -500);
-    // // go back forward for 3.5 seconds
-    // pros::delay(3500);
-    // intake::setIntakeVelocity(0);
-    // robot::chassis->getModel()->tank(0, 0);
 
-    /*
-    end old autonomous routine
-    */
+    intake::setIntakeVelocity(-100);
+    robot::profile_controller->setTarget("toCubes");
+    robot::profile_controller->waitUntilSettled();
+    intake::setIntakeVelocity(0);
 
-    // robot::profile_controller->setTarget("drive_through_business", true, false);
-    // // block until path finishes
-    // robot::profile_controller->waitUntilSettled();
+    robot::profile_controller->setTarget("toCubes", true);
+    robot::profile_controller->waitUntilSettled();
+    robot::profile_controller->setTarget("toScoreZone");
+    robot::profile_controller->waitUntilSettled();
+
 
     robot::chassis->getModel()->setBrakeMode(constants::OKAPI_COAST);
 }
