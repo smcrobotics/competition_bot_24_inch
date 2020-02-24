@@ -55,7 +55,7 @@ void initialize() {
     sideIndicate::init();
 
     robot::profile_controller = okapi::AsyncMotionProfileControllerBuilder()
-            .withLimits({.5, .5, .5})
+            .withLimits({.1, .1, .1})
             .withOutput(robot::chassis)
             .buildMotionProfileController();
 
@@ -66,7 +66,7 @@ void initialize() {
 
     robot::profile_controller->generatePath({
         {268.5_cm, 0_cm, 180_deg},
-        {350.3_in, 0_cm, 180_deg}}, "forward"
+        {350.3_cm, 0_cm, 180_deg}}, "forward"
     );
 
     robot::profile_controller->generatePath({
@@ -113,22 +113,29 @@ void competition_initialize() {}
  */
 void autonomous() {
     robot::chassis->getModel()->setBrakeMode(constants::OKAPI_BRAKE);
+    bool start_on_red = true;
 
+    // Put preload in endzone
     robot::profile_controller->setTarget("forward");
     robot::profile_controller->waitUntilSettled();
+    intake::setIntakeVelocity(-100);
+    pros::delay(1500);
+    intake::setIntakeVelocity(0);
+
+    // Go back to starting position
     robot::profile_controller->setTarget("forward", true);
     robot::profile_controller->waitUntilSettled();
 
-
-    intake::setIntakeVelocity(-100);
-    robot::profile_controller->setTarget("toCubes");
-    robot::profile_controller->waitUntilSettled();
-    intake::setIntakeVelocity(0);
-
-    robot::profile_controller->setTarget("toCubes", true);
-    robot::profile_controller->waitUntilSettled();
-    robot::profile_controller->setTarget("toScoreZone");
-    robot::profile_controller->waitUntilSettled();
+//    // Grab cubes
+//    intake::setIntakeVelocity(100);
+//    robot::profile_controller->setTarget("toCubes", false, true);
+//    robot::profile_controller->waitUntilSettled();
+//    intake::setIntakeVelocity(0);
+//
+//    robot::profile_controller->setTarget("toCubes", true, true);
+//    robot::profile_controller->waitUntilSettled();
+//    robot::profile_controller->setTarget("toScoreZone", false, true);
+//    robot::profile_controller->waitUntilSettled();
 
 
     robot::chassis->getModel()->setBrakeMode(constants::OKAPI_COAST);
@@ -184,12 +191,10 @@ void initBindings(std::vector<Binding *> & bind_list) {
         tray::setTrayVelocity(0);
     }, nullptr));
 
-    bind_list.emplace_back(new Binding(Button(bindings::PLACE_STACK), [](){
-        tray::deployTray();
-    }, nullptr, nullptr));
+    bind_list.emplace_back(new Binding(Button(bindings::PLACE_STACK), tray::deployTray, nullptr, nullptr));
 
     // TODO: Remove this before competition
-//    bind_list.emplace_back(new Binding(Button(okapi::ControllerDigital::Y), autonomous, nullptr, nullptr)); // Bind for auto test
+    bind_list.emplace_back(new Binding(Button(okapi::ControllerDigital::Y), autonomous, nullptr, nullptr)); // Bind for auto test
     // Note: Auto bind is blocking
 
     /** End bind block **/
@@ -220,6 +225,7 @@ void opcontrol() {
             b->update();
 //        intake::printPos();
         tray::printPos();
+        tray::update();
 
         pros::delay(1);
     }

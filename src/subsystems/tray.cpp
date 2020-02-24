@@ -25,10 +25,12 @@ namespace tray {
     }
 
     void update() {
-        if (tray_limit_switch->isPressed() && limit_timeout == 0) {
+        if (tray_limit_switch->isPressed() && limit_timeout == 0 && tray_position_motor->getActualVelocity() <= 0) {
             tray_position_motor->tarePosition();
             tray_position_motor->moveAbsolute(0, 1);
             current_pos = DOWN;
+            limit_timeout = 50;
+            cout << "tar boi" << endl;
         }
         else if (limit_timeout > 0)
             limit_timeout--;

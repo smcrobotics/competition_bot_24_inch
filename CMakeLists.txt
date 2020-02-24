@@ -282,7 +282,6 @@ add_executable(competition_bot_24_inch
     include/smc/util/constants.h
     include/smc/util/util.h
     include/smc/robot.h
-    include/smc/tasks.h
     include/api.h
     include/main.h
     include/smc/subsystems/sideIndicate.h
@@ -292,5 +291,5 @@ add_executable(competition_bot_24_inch
     src/util/Binding.cpp
     src/util/util.cpp
     src/main.cpp
-    src/tasks.cpp
-    src/subsystems/sideIndicate.cpp)
+    src/subsystems/sideIndicate.cpp
+    src/commands.cpp)

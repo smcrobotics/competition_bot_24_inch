@@ -6,7 +6,7 @@
 
 namespace tray {
     void deployTray() {
-        intake::setIntakeVelocity(-15);
+        intake::setIntakeVelocity(-25);
         tray::moveTrayToPosition(tray::TrayPosition::UP, true);
         pros::delay(1000);
         // intake::setIntakeVelocity(0);
@@ -15,7 +15,7 @@ namespace tray {
         robot::chassis->moveDistance(-1_ft);
         // reset maxVelocity to default val
         robot::chassis->setMaxVelocity(vel);
-        pros::delay(1000);
+        pros::delay(2000);
         intake::setIntakeVelocity(0);
     }
 }
