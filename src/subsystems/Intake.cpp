@@ -1,10 +1,14 @@
 //
 // Created by ariel on 11/19/19.
 //
+#include <iostream>
+
 #include "smc/util/util.h"
 #include "smc/subsystems/intake.h"
 #include "smc/util/constants.h"
 
+using std::cout;
+using std::endl;
 
 namespace intake {
     std::unique_ptr<okapi::Motor> left_intake_motor;
@@ -46,5 +50,27 @@ namespace intake {
         float voltage = (percent / 100.0f) * 12000;
         left_intake_motor->moveVoltage((int) voltage);
         right_intake_motor->moveVoltage((int) voltage);
+    }
+}
+
+namespace subsystems {
+    Intake::Intake() {
+        left_intake_motor = util::initMotor(robot::INTAKE_MOTOR_PORT_LEFT, okapi::AbstractMotor::gearset::blue);
+        right_intake_motor = util::initMotor(robot::INTAKE_MOTOR_PORT_RIGHT, okapi::AbstractMotor::gearset::blue);
+        current_intake_percent = 0;
+    }
+
+    void Intake::update() {
+        float voltage = (current_intake_percent / 100.0f) * 12000;
+        left_intake_motor->moveVelocity(voltage);
+        right_intake_motor->moveVelocity(voltage);
+    }
+
+    void Intake::setIntakeVelocity(int percent) {
+        current_intake_percent = percent;
+    }
+
+    void Intake::printDebug() {
+        cout << "[DEBUG][Intake] Intake velocity: "
     }
 }

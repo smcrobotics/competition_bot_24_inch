@@ -30,4 +30,24 @@ namespace intake {
     extern std::unique_ptr<okapi::Motor> left_intake_pos_motor;
 }
 
+namespace subsystems {
+    class Intake {
+    public:
+        Intake();
+        void update();
+        void printDebug();
+        void setIntakeVelocity(int percent);
+
+        void intakeMax(); // These methods are for controller bindings, should never be used in code
+        void intakeMin();
+        void intakeZero();
+
+    private:
+        int current_intake_percent;
+
+        std::unique_ptr<okapi::Motor> left_intake_motor;
+        std::unique_ptr<okapi::Motor> right_intake_motor;
+    };
+}
+
 #endif //ROBOT_CODE_INTAKE_H
