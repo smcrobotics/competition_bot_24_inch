@@ -17,6 +17,7 @@ typedef okapi::ControllerButton Button;
 /* Begin forward declaration block */
 std::shared_ptr<okapi::AsyncMotionProfileController> robot::profile_controller;
 std::shared_ptr<okapi::ChassisController> robot::chassis;
+
 /* End forward declaration block */
 
 
@@ -50,9 +51,10 @@ void initialize() {
             .withDimensions(AbstractMotor::gearset::green, ChassisScales{{4_in, 16.1_in}, okapi::imev5GreenTPR})
             .build();
 
-    intake::init();
     tray::init();
     sideIndicate::init();
+
+    subsystems::Intake::getInstance();
 
     robot::profile_controller = okapi::AsyncMotionProfileControllerBuilder()
             .withLimits({.1, .1, .1})
@@ -113,14 +115,13 @@ void competition_initialize() {}
  */
 void autonomous() {
     robot::chassis->getModel()->setBrakeMode(constants::OKAPI_BRAKE);
+
     bool start_on_red = true;
 
     // Put preload in endzone
     robot::profile_controller->setTarget("forward");
     robot::profile_controller->waitUntilSettled();
-    intake::setIntakeVelocity(-100);
     pros::delay(1500);
-    intake::setIntakeVelocity(0);
 
     // Go back to starting position
     robot::profile_controller->setTarget("forward", true);
@@ -156,27 +157,20 @@ void autonomous() {
  */
 
 void initBindings(std::vector<Binding *> & bind_list) {
+
     // Intake hold binding
     bind_list.emplace_back(new Binding(Button(bindings::INTAKE_BUTTON), []() {
-        intake::setIntakeVelocity(-70);
+        subsystems::Intake::getInstance().setIntakeVelocity(70);
     }, []() {
-        intake::setIntakeVelocity(0);
+        subsystems::Intake::getInstance().setIntakeVelocity(0);
     }, nullptr));
 
     // Outtake hold binding
     bind_list.emplace_back(new Binding(Button(bindings::OUTTAKE_BUTTON), []() {
-        intake::setIntakeVelocity(100);
+        subsystems::Intake::getInstance().setIntakeVelocity(-70);
     }, []() {
-        intake::setIntakeVelocity(0);
+        subsystems::Intake::getInstance().setIntakeVelocity(0);
     }, nullptr));
-
-    // Arm position bindings
-    bind_list.emplace_back(new Binding(Button(bindings::TRAY_POS_UP), []() {
-        tray::moveTrayToPosition(tray::TrayPosition::UP);
-    }, nullptr, nullptr));
-    bind_list.emplace_back(new Binding(Button(bindings::TRAY_POS_DOWN), []() {
-        tray::moveTrayToPosition(tray::TrayPosition::DOWN);
-    }, nullptr, nullptr));
 
     // Toggle tray binding
     bind_list.emplace_back(new Binding(Button(bindings::RAISE_TRAY), []() {

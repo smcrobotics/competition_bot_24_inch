@@ -10,7 +10,7 @@
 
 #include "smc/util/constants.h"
 #include "smc/subsystems/tray.h"
-#include "smc/subsystems/intake.h"
+#include "smc/subsystems/Intake.h"
 
 namespace tray {
     void deployTray();
