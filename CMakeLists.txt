@@ -284,12 +284,10 @@ add_executable(competition_bot_24_inch
     include/smc/robot.h
     include/api.h
     include/main.h
-    include/smc/subsystems/sideIndicate.h
-    src/subsystems/drive.cpp
+        src/subsystems/drive.cpp
         src/subsystems/Intake.cpp
     src/subsystems/tray.cpp
     src/util/Binding.cpp
     src/util/util.cpp
     src/main.cpp
-    src/subsystems/sideIndicate.cpp
-    src/commands.cpp src/subsystems/AbstractSubsystem.cpp include/smc/subsystems/AbstractSubsystem.h)
+        src/commands.cpp src/subsystems/AbstractSubsystem.cpp include/smc/subsystems/AbstractSubsystem.h)
