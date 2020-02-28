@@ -5,12 +5,14 @@
 #ifndef COMPETITION_BOT_24_INCH_ABSTRACTSUBSYSTEM_H
 #define COMPETITION_BOT_24_INCH_ABSTRACTSUBSYSTEM_H
 
-namespace Subsystems {
+namespace subsystems {
     class AbstractSubsystem {
     public:
         virtual void update() = 0;
 
         virtual void printDebug() = 0;
+
+        virtual void printLCD(int line) = 0;
     };
 }
 

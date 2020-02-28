@@ -18,9 +18,9 @@ namespace subsystems {
         current_intake_voltage = 0;
     }
 
-    Intake & Intake::getInstance() {
+    Intake * Intake::getInstance() {
         static Intake intake;
-        return intake;
+        return &intake;
     }
 
     void Intake::update() {
@@ -28,13 +28,21 @@ namespace subsystems {
         right_intake_motor->moveVelocity(current_intake_voltage);
     }
 
-    void Intake::setIntakeVelocity(int percent) {
-        current_intake_voltage = ((float) percent / 100.0f) * 12000;
-        current_intake_percent = percent;
-    }
-
     void Intake::printDebug() {
         cout << "[DEBUG][Intake] Intake velocity: " << current_intake_percent << endl;
         cout << "[DEBUG][Intake] Intake voltage: " << current_intake_voltage << endl;
+    }
+
+    void Intake::printLCD(int line) {
+        std::ostringstream out;
+        out << "Intake %: " << current_intake_percent;
+
+        pros::lcd::clear_line(line);
+        pros::lcd::set_text(line, out.str());
+    }
+
+    void Intake::setIntakeVelocity(int percent) {
+        current_intake_voltage = ((float) percent / 100.0f) * 12000;
+        current_intake_percent = percent;
     }
 }

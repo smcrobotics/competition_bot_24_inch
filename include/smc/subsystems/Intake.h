@@ -10,14 +10,15 @@
 #include "okapi/api.hpp"
 
 namespace subsystems {
-class Intake : public Subsystems::AbstractSubsystem {
+class Intake : public AbstractSubsystem {
     public:
-        static Intake & getInstance();
+        static Intake * getInstance();
         Intake(const Intake &) = delete;
         void operator=(const Intake & lhs) = delete;
 
         void update() override;
         void printDebug() override;
+        void printLCD(int line) override;
         void setIntakeVelocity(int percent);
 
     private:
