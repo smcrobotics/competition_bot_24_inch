@@ -69,7 +69,6 @@ void initialize() {
             .build();
 
     tray::init();
-    sideIndicate::init();
 
     subsystems::Intake::getInstance();
 
@@ -133,8 +132,6 @@ void competition_initialize() {}
 void autonomous() {
     robot::chassis->getModel()->setBrakeMode(constants::OKAPI_BRAKE);
 
-    bool start_on_red = true;
-
     // Put preload in endzone
     robot::profile_controller->setTarget("forward");
     robot::profile_controller->waitUntilSettled();
@@ -174,7 +171,6 @@ void autonomous() {
  */
 
 void initBindings(std::vector<Binding *> & bind_list) {
-
     // Intake hold binding
     bind_list.emplace_back(new Binding(Button(bindings::INTAKE_BUTTON), []() {
         subsystems::Intake::getInstance()->setIntakeVelocity(70);
@@ -207,8 +203,6 @@ void initBindings(std::vector<Binding *> & bind_list) {
     // TODO: Remove this before competition
     bind_list.emplace_back(new Binding(Button(okapi::ControllerDigital::Y), autonomous, nullptr, nullptr)); // Bind for auto test
     // Note: Auto bind is blocking
-
-    /** End bind block **/
 }
 
 #pragma clang diagnostic push
@@ -223,6 +217,7 @@ void opcontrol() {
     std::vector<subsystems::AbstractSubsystem *> systems;
 
     systems.push_back(subsystems::Intake::getInstance());
+    systems.push_back(subsystems::Tray::getInstance());
 
     initBindings(bind_list);
     // Have to do the drive-brake toggle here because it relies on variables local to main()
@@ -256,8 +251,6 @@ void opcontrol() {
 
 //        intake::printPos();
 //        tray::printPos();
-        tray::update();
-
         pros::delay(1);
     }
 
