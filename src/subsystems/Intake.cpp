@@ -11,11 +11,9 @@ using std::cout;
 using std::endl;
 
 namespace subsystems {
-    Intake::Intake() {
+    Intake::Intake() : current_intake_percent(0), current_intake_voltage(0) {
         left_intake_motor = util::initMotor(robot::INTAKE_MOTOR_PORT_LEFT, okapi::AbstractMotor::gearset::blue);
         right_intake_motor = util::initMotor(robot::INTAKE_MOTOR_PORT_RIGHT, okapi::AbstractMotor::gearset::blue);
-        current_intake_percent = 0;
-        current_intake_voltage = 0;
     }
 
     Intake * Intake::getInstance() {
