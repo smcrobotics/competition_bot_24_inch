@@ -33,7 +33,7 @@ namespace subsystems {
 
     void Intake::printLCD(int line) {
         std::ostringstream out;
-        out << "Intake %: " << current_intake_percent;
+        out << "[Intake] %: " << current_intake_percent;
 
         pros::lcd::clear_line(line);
         pros::lcd::set_text(line, out.str());
