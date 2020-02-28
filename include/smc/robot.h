@@ -14,7 +14,6 @@
 #include "subsystems/Intake.h"
 #include "subsystems/tray.h"
 #include "subsystems/drive.h"
-#include "subsystems/sideIndicate.h"
 #include "util/constants.h"
 
 #endif
