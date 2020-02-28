@@ -27,14 +27,23 @@ std::shared_ptr<okapi::ChassisController> robot::chassis;
  * When this callback is fired, it will toggle line 2 of the LCD text between
  * "I was pressed!" and nothing.
  */
+static bool on_right_side = true;
+static bool update_lcd_info = true;
+
+void on_right_button() {
+    on_right_side = true;
+    pros::lcd::clear_line(0);
+    pros::lcd::set_text(0, "Auton: Right side");
+}
+
+void on_left_button() {
+    on_right_side = false;
+    pros::lcd::clear_line(0);
+    pros::lcd::set_text(0, "Auton: Left side");
+}
+
 void on_center_button() {
-    static bool pressed = false;
-    pressed = !pressed;
-    if (pressed) {
-        pros::lcd::set_text(2, "I was pressed!");
-    } else {
-        pros::lcd::clear_line(2);
-    }
+    update_lcd_info = !update_lcd_info;
 }
 
 /**
@@ -44,6 +53,14 @@ void on_center_button() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
+    pros::lcd::initialize();
+    pros::lcd::register_btn0_cb(on_left_button);
+    pros::lcd::register_btn2_cb(on_right_button);
+    pros::lcd::register_btn1_cb(on_center_button);
+
+    pros::lcd::set_text(0, "Auton: Right Side");
+
+
     robot::chassis =
             ChassisControllerBuilder().withMotors(
                     okapi::MotorGroup{robot::BACK_LEFT_DRIVE_MOTOR_PORT, robot::FRONT_LEFT_DRIVE_MOTOR_PORT},
@@ -160,16 +177,16 @@ void initBindings(std::vector<Binding *> & bind_list) {
 
     // Intake hold binding
     bind_list.emplace_back(new Binding(Button(bindings::INTAKE_BUTTON), []() {
-        subsystems::Intake::getInstance().setIntakeVelocity(70);
+        subsystems::Intake::getInstance()->setIntakeVelocity(70);
     }, []() {
-        subsystems::Intake::getInstance().setIntakeVelocity(0);
+        subsystems::Intake::getInstance()->setIntakeVelocity(0);
     }, nullptr));
 
     // Outtake hold binding
     bind_list.emplace_back(new Binding(Button(bindings::OUTTAKE_BUTTON), []() {
-        subsystems::Intake::getInstance().setIntakeVelocity(-70);
+        subsystems::Intake::getInstance()->setIntakeVelocity(-70);
     }, []() {
-        subsystems::Intake::getInstance().setIntakeVelocity(0);
+        subsystems::Intake::getInstance()->setIntakeVelocity(0);
     }, nullptr));
 
     // Toggle tray binding
@@ -197,10 +214,16 @@ void initBindings(std::vector<Binding *> & bind_list) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 void opcontrol() {
+    const bool DEBUG = false;
+    bool isBrake = false;
+
     okapi::Controller master(okapi::ControllerId::master);
 
-    bool isBrake = false;
     std::vector<Binding *> bind_list;
+    std::vector<subsystems::AbstractSubsystem *> systems;
+
+    systems.push_back(subsystems::Intake::getInstance());
+
     initBindings(bind_list);
     // Have to do the drive-brake toggle here because it relies on variables local to main()
     bind_list.emplace_back(new Binding(okapi::ControllerButton(bindings::DRIVE_BRAKE_TOGGLE), nullptr,
@@ -217,8 +240,22 @@ void opcontrol() {
         
         for (Binding * b : bind_list)
             b->update();
+
+        int lcd_line = 1;
+        for (subsystems::AbstractSubsystem * system : systems) {
+            system->update();
+
+            if (update_lcd_info)
+                system->printLCD(lcd_line);
+
+            if (DEBUG)
+                system->printDebug();
+
+            lcd_line++;
+        }
+
 //        intake::printPos();
-        tray::printPos();
+//        tray::printPos();
         tray::update();
 
         pros::delay(1);
