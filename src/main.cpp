@@ -68,9 +68,9 @@ void initialize() {
             .withDimensions(AbstractMotor::gearset::green, ChassisScales{{4_in, 16.1_in}, okapi::imev5GreenTPR})
             .build();
 
-    tray::init();
-
+    // These are here to make sure the tray and intake objects are constructed after this point
     subsystems::Intake::getInstance();
+    subsystems::Tray::getInstance();
 
     robot::profile_controller = okapi::AsyncMotionProfileControllerBuilder()
             .withLimits({.1, .1, .1})
@@ -187,16 +187,18 @@ void initBindings(std::vector<Binding *> & bind_list) {
 
     // Toggle tray binding
     bind_list.emplace_back(new Binding(Button(bindings::RAISE_TRAY), []() {
-        tray::setTrayVelocity(60);
+        subsystems::Tray::getInstance()->trayMoveManual(60);
     }, []() {
-        tray::setTrayVelocity(0);
+        subsystems::Tray::getInstance()->trayMoveManual(60);
     }, nullptr));
 
     bind_list.emplace_back(new Binding(Button(bindings::LOWER_TRAY), []() {
-        tray::setTrayVelocity(-60);
+        subsystems::Tray::getInstance()->trayMoveManual(-60);
     }, []() {
-        tray::setTrayVelocity(0);
+        subsystems::Tray::getInstance()->trayMoveManual(0);
     }, nullptr));
+
+    bind_list.emplace_back(new Binding(Button(bindings::TOGGLE_TRAY), subsystems::Tray::togglePosition, nullptr, nullptr));
 
     bind_list.emplace_back(new Binding(Button(bindings::PLACE_STACK), tray::deployTray, nullptr, nullptr));
 

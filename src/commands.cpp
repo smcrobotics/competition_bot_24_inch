@@ -7,9 +7,10 @@
 namespace tray {
     void deployTray() {
         subsystems::Intake * intake = subsystems::Intake::getInstance();
+        subsystems::Tray * tray = subsystems::Tray::getInstance();
 
         intake->setIntakeVelocity(-25);
-        tray::moveTrayToPosition(tray::TrayPosition::UP, true);
+        tray->moveTrayToPosition(subsystems::Tray::UP);
         pros::delay(1000);
         // intake::setIntakeVelocity(0);
         double vel = robot::chassis->getModel()->getMaxVelocity();

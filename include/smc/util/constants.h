@@ -46,6 +46,7 @@ namespace bindings {
 
     const auto PLACE_STACK = okapi::ControllerDigital::A;
     const auto LOWER_TRAY = okapi::ControllerDigital::right;
+    const auto TOGGLE_TRAY = okapi::ControllerDigital::Y;
     const auto RAISE_TRAY = okapi::ControllerDigital::left;
 
     const auto DRIVE_BRAKE_TOGGLE = okapi::ControllerDigital::B;

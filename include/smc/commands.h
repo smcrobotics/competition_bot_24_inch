@@ -9,7 +9,7 @@
 #include "okapi/api.hpp"
 
 #include "smc/util/constants.h"
-#include "smc/subsystems/tray.h"
+#include "smc/subsystems/Tray.h"
 #include "smc/subsystems/Intake.h"
 
 namespace tray {

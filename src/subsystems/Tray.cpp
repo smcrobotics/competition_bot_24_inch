@@ -3,7 +3,7 @@
 //
 #include "smc/util/util.h"
 #include "smc/robot.h"
-#include "smc/subsystems/tray.h"
+#include "smc/subsystems/Tray.h"
 
 using std::cout;
 using std::endl;

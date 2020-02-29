@@ -12,7 +12,7 @@
 #define _ROBOT_H
 
 #include "subsystems/Intake.h"
-#include "subsystems/tray.h"
+#include "subsystems/Tray.h"
 #include "subsystems/drive.h"
 #include "util/constants.h"
 

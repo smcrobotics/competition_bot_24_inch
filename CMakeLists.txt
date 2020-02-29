@@ -277,7 +277,7 @@ add_executable(competition_bot_24_inch
     include/pros/vision.hpp
     include/smc/subsystems/drive.h
         include/smc/subsystems/Intake.h
-    include/smc/subsystems/tray.h
+        include/smc/subsystems/Tray.h
     include/smc/util/Binding.h
     include/smc/util/constants.h
     include/smc/util/util.h
@@ -286,7 +286,7 @@ add_executable(competition_bot_24_inch
     include/main.h
         src/subsystems/drive.cpp
         src/subsystems/Intake.cpp
-    src/subsystems/tray.cpp
+        src/subsystems/Tray.cpp
     src/util/Binding.cpp
     src/util/util.cpp
     src/main.cpp
