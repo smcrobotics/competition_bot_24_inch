@@ -20,7 +20,6 @@ typedef okapi::ControllerButton Button;
 /* Begin forward declaration block */
 std::shared_ptr<okapi::AsyncMotionProfileController> robot::profile_controller;
 std::shared_ptr<okapi::ChassisController> robot::chassis;
-
 /* End forward declaration block */
 
 
@@ -63,13 +62,14 @@ void initialize() {
 
     pros::lcd::set_text(0, "Auton: Right Side");
 
-
     robot::chassis =
             ChassisControllerBuilder().withMotors(
                     okapi::MotorGroup{robot::BACK_LEFT_DRIVE_MOTOR_PORT, robot::FRONT_LEFT_DRIVE_MOTOR_PORT},
                     okapi::MotorGroup{robot::BACK_RIGHT_DRIVE_MOTOR_PORT, robot::FRONT_RIGHT_DRIVE_MOTOR_PORT})
             .withDimensions(AbstractMotor::gearset::green, ChassisScales{{4_in, 16.1_in}, okapi::imev5GreenTPR})
             .build();
+
+    robot::chassis->getModel()->setBrakeMode(constants::OKAPI_BRAKE);
 
     // These are here to make sure the tray and intake objects are constructed after this point
     subsystems::Intake::getInstance();
@@ -85,22 +85,22 @@ void initialize() {
     // // second waypoint is first to be executed
     // // x axis is forward, y axis is to the left */
 
-    robot::profile_controller->generatePath({
-        {268.5_cm, 0_cm, 180_deg},
-        {350.3_cm, 0_cm, 180_deg}}, "forward"
-    );
+    // robot::profile_controller->generatePath({
+    //     {268.5_cm, 0_cm, 180_deg},
+    //     {350.3_cm, 0_cm, 180_deg}}, "forward"
+    // );
 
-    robot::profile_controller->generatePath({
-        {268.5_cm, 0_cm, 180_deg},
-        {246.6_cm, 126.7_cm, 0_deg},
-        {178.6_cm, 126.7_cm, 0_deg},
-        {67_cm, 126.7_cm, 0_deg}
-    }, "toCubes");
+    // robot::profile_controller->generatePath({
+    //     {268.5_cm, 0_cm, 180_deg},
+    //     {246.6_cm, 126.7_cm, 0_deg},
+    //     {178.6_cm, 126.7_cm, 0_deg},
+    //     {67_cm, 126.7_cm, 0_deg}
+    // }, "toCubes");
 
-    robot::profile_controller->generatePath({
-        {268.5_cm, 0_cm, 180_deg},
-        {350.3_cm, 0_cm, 180_deg}
-    }, "toScoreZone");
+    // robot::profile_controller->generatePath({
+    //     {268.5_cm, 0_cm, 180_deg},
+    //     {350.3_cm, 0_cm, 180_deg}
+    // }, "toScoreZone");
 
 }
 
@@ -133,30 +133,7 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-    robot::chassis->getModel()->setBrakeMode(constants::OKAPI_BRAKE);
-
-    // Put preload in endzone
-    robot::profile_controller->setTarget("forward");
-    robot::profile_controller->waitUntilSettled();
-    pros::delay(1500);
-
-    // Go back to starting position
-    robot::profile_controller->setTarget("forward", true);
-    robot::profile_controller->waitUntilSettled();
-
-//    // Grab cubes
-//    intake::setIntakeVelocity(100);
-//    robot::profile_controller->setTarget("toCubes", false, true);
-//    robot::profile_controller->waitUntilSettled();
-//    intake::setIntakeVelocity(0);
-//
-//    robot::profile_controller->setTarget("toCubes", true, true);
-//    robot::profile_controller->waitUntilSettled();
-//    robot::profile_controller->setTarget("toScoreZone", false, true);
-//    robot::profile_controller->waitUntilSettled();
-
-
-    robot::chassis->getModel()->setBrakeMode(constants::OKAPI_COAST);
+    
 }
 
 /**
@@ -201,12 +178,15 @@ void initBindings(std::vector<Binding *> & bind_list) {
         subsystems::Tray::getInstance()->trayMoveManual(0);
     }, nullptr));
 
-    bind_list.emplace_back(new Binding(Button(bindings::TOGGLE_TRAY), subsystems::Tray::togglePosition, nullptr, nullptr));
+    bind_list.emplace_back(new Binding(Button(bindings::TOGGLE_TRAY),
+        subsystems::Tray::togglePosition, nullptr, nullptr));
 
-    bind_list.emplace_back(new Binding(Button(bindings::PLACE_STACK), tray::deployTray, nullptr, nullptr));
+    bind_list.emplace_back(new Binding(Button(bindings::PLACE_STACK),
+        tray::deployTray, nullptr, nullptr));
 
     // TODO: Remove this before competition
-    bind_list.emplace_back(new Binding(Button(okapi::ControllerDigital::Y), autonomous, nullptr, nullptr)); // Bind for auto test
+    bind_list.emplace_back(new Binding(Button(okapi::ControllerDigital::Y),
+        autonomous, nullptr, nullptr)); // Bind for auto test
     // Note: Auto bind is blocking
 }
 
@@ -243,7 +223,7 @@ void opcontrol() {
         for (Binding * b : bind_list)
             b->update();
 
-        int lcd_line = 1;
+        int lcd_line = 1; // start debug info on line 1 an increment for each subsystem
         for (subsystems::AbstractSubsystem * system : systems) {
             system->update();
 

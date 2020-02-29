@@ -30,6 +30,7 @@ namespace robot {
     const char TRAY_POS_DOWN_LIMIT_SWITCH = 'H';
     /* End tray block */
 
+
     /* Begin random global pointer block */
     extern std::shared_ptr<okapi::ChassisController> chassis;
     extern std::shared_ptr<okapi::AsyncMotionProfileController> profile_controller;
@@ -41,13 +42,16 @@ namespace bindings {
     const auto INTAKE_BUTTON  = okapi::ControllerDigital::R1;
     const auto OUTTAKE_BUTTON = okapi::ControllerDigital::L1;
 
+
     const auto TRAY_POS_UP = okapi::ControllerDigital::up;
     const auto TRAY_POS_DOWN = okapi::ControllerDigital::down;
+
 
     const auto PLACE_STACK = okapi::ControllerDigital::A;
     const auto LOWER_TRAY = okapi::ControllerDigital::right;
     const auto TOGGLE_TRAY = okapi::ControllerDigital::Y;
     const auto RAISE_TRAY = okapi::ControllerDigital::left;
+
 
     const auto DRIVE_BRAKE_TOGGLE = okapi::ControllerDigital::B;
 }
