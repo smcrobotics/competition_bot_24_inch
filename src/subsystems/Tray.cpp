@@ -44,9 +44,9 @@ namespace subsystems {
     void Tray::printLCD(int line) {
         std::ostringstream out;
 
-        out << "[Tray] didTare: " << did_tare;
+        out << "[T] tare: " << did_tare;
         out << ", pos: " << tray_position_motor->getPosition();
-        out << ", timeout: " << limit_timeout;
+        out << ", t'out: " << limit_timeout;
 
         pros::lcd::clear_line(line);
         pros::lcd::set_text(line, out.str());
