@@ -64,22 +64,22 @@ void initialize() {
     // // second waypoint is first to be executed
     // // x axis is forward, y axis is to the left */
 
-    robot::profile_controller->generatePath({
-        {268.5_cm, 0_cm, 180_deg},
-        {350.3_cm, 0_cm, 180_deg}}, "forward"
-    );
+    // robot::profile_controller->generatePath({
+    //     {268.5_cm, 0_cm, 180_deg},
+    //     {350.3_cm, 0_cm, 180_deg}}, "forward"
+    // );
 
-    robot::profile_controller->generatePath({
-        {268.5_cm, 0_cm, 180_deg},
-        {246.6_cm, 126.7_cm, 0_deg},
-        {178.6_cm, 126.7_cm, 0_deg},
-        {67_cm, 126.7_cm, 0_deg}
-    }, "toCubes");
+    // robot::profile_controller->generatePath({
+    //     {268.5_cm, 0_cm, 180_deg},
+    //     {246.6_cm, 126.7_cm, 0_deg},
+    //     {178.6_cm, 126.7_cm, 0_deg},
+    //     {67_cm, 126.7_cm, 0_deg}
+    // }, "toCubes");
 
-    robot::profile_controller->generatePath({
-        {268.5_cm, 0_cm, 180_deg},
-        {350.3_cm, 0_cm, 180_deg}
-    }, "toScoreZone");
+    // robot::profile_controller->generatePath({
+    //     {268.5_cm, 0_cm, 180_deg},
+    //     {350.3_cm, 0_cm, 180_deg}
+    // }, "toScoreZone");
 
 }
 

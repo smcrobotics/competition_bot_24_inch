@@ -43,11 +43,11 @@ namespace tray {
     void moveTrayToPosition(TrayPosition pos, bool blocking) {
         // int motor_velocity = 40;
         if (pos == UP) {
-            tray_position_motor->moveAbsolute(robot::TRAY_MOTOR_POS_UP, 40); // TODO: change to constants::AUTO_TRAY_SPEED
+            tray_position_motor->moveAbsolute(robot::TRAY_MOTOR_POS_UP, 60); // TODO: change to constants::AUTO_TRAY_SPEED
             limit_timeout = 200;
             current_pos = UP;
         } else if (pos == DOWN) {
-            tray_position_motor->moveAbsolute(0, 40); // TODO: change to constants::AUTO_TRAY_SPEED
+            tray_position_motor->moveAbsolute(0, 60); // TODO: change to constants::AUTO_TRAY_SPEED
             current_pos = DOWN;
         }
 
