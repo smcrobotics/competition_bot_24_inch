@@ -2,6 +2,8 @@
 #include "smc/util/util.h"
 #include "okapi/api.hpp"
 
+#include <cmath>
+
 using std::unique_ptr;
 using std::make_unique;
 
@@ -23,5 +25,8 @@ namespace util {
         return make_unique<okapi::ADIButton>(port, false);
     }
 
+    double powKeepSign(double num, double power) {
+        return pow(abs(num), power) * num / abs(num);
+    }
 }
 

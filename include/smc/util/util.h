@@ -15,6 +15,8 @@ namespace util {
     std::unique_ptr<okapi::Motor> initMotor(int port);
 
     std::unique_ptr<okapi::ADIButton> initLimitSwitch(char port);
+
+    double powKeepSign(double num, double power);
 }
 
 #endif //ROBOT_CODE_UTIL_H

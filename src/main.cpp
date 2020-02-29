@@ -1,4 +1,5 @@
 #include <unistd.h>
+
 #define chdir f_chdir
 
 
@@ -7,6 +8,8 @@
 #include "smc/robot.h"
 #include "smc/commands.h"
 #include "smc/util/Binding.h"
+#include "smc/util/util.h"
+
 
 using namespace okapi;
 using std::cout;
@@ -233,7 +236,9 @@ void opcontrol() {
     
     cout << "Initialization finished, entering drive loop" << endl;
     while (true) {
-        drive::opControl(master);
+        double leftY = util::powKeepSign(master.getAnalog(okapi::ControllerAnalog::leftY), 1.5);
+        double rightY = util::powKeepSign(master.getAnalog(okapi::ControllerAnalog::rightY), 1.5);
+        robot::chassis->getModel()->tank(leftY, rightY);
         
         for (Binding * b : bind_list)
             b->update();
@@ -251,8 +256,6 @@ void opcontrol() {
             lcd_line++;
         }
 
-//        intake::printPos();
-//        tray::printPos();
         pros::delay(1);
     }
 
