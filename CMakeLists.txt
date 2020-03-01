@@ -275,21 +275,17 @@ add_executable(competition_bot_24_inch
     include/pros/serial.hpp
     include/pros/vision.h
     include/pros/vision.hpp
-    include/smc/subsystems/drive.h
-    include/smc/subsystems/intake.h
-    include/smc/subsystems/tray.h
+        include/smc/subsystems/Intake.h
+        include/smc/subsystems/Tray.h
     include/smc/util/Binding.h
     include/smc/util/constants.h
     include/smc/util/util.h
     include/smc/robot.h
     include/api.h
     include/main.h
-    include/smc/subsystems/sideIndicate.h
-    src/subsystems/drive.cpp
-    src/subsystems/intake.cpp
-    src/subsystems/tray.cpp
+        src/subsystems/Intake.cpp
+        src/subsystems/Tray.cpp
     src/util/Binding.cpp
     src/util/util.cpp
     src/main.cpp
-    src/subsystems/sideIndicate.cpp
-    src/commands.cpp)
+        src/commands.cpp src/subsystems/AbstractSubsystem.cpp include/smc/subsystems/AbstractSubsystem.h)

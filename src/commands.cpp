@@ -6,16 +6,19 @@
 
 namespace tray {
     void deployTray() {
-        intake::setIntakeVelocity(-20);
-        pros::delay(200);
-        tray::moveTrayToPosition(tray::TrayPosition::UP, true);
-        intake::setIntakeVelocity(-10);
+        subsystems::Intake * intake = subsystems::Intake::getInstance();
+        subsystems::Tray * tray = subsystems::Tray::getInstance();
+        
+        intake->setIntakeVelocity(-25);
+        tray->moveTrayToPosition(subsystems::Tray::UP);
+        pros::delay(1000);
         // intake::setIntakeVelocity(0);
         double vel = robot::chassis->getModel()->getMaxVelocity();
         robot::chassis->setMaxVelocity(10);
-        robot::chassis->moveDistance(-0.5_ft);
+        robot::chassis->moveDistance(-1_ft);
         // reset maxVelocity to default val
         robot::chassis->setMaxVelocity(vel);
-        intake::setIntakeVelocity(0);
+        pros::delay(2000);
+        intake->setIntakeVelocity(0);
     }
 }

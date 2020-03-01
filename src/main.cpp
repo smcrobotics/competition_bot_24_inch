@@ -1,4 +1,5 @@
 #include <unistd.h>
+
 #define chdir f_chdir
 
 
@@ -7,6 +8,8 @@
 #include "smc/robot.h"
 #include "smc/commands.h"
 #include "smc/util/Binding.h"
+#include "smc/util/util.h"
+
 
 using namespace okapi;
 using std::cout;
@@ -26,14 +29,23 @@ std::shared_ptr<okapi::ChassisController> robot::chassis;
  * When this callback is fired, it will toggle line 2 of the LCD text between
  * "I was pressed!" and nothing.
  */
+static bool on_right_side = true;
+static bool update_lcd_info = true;
+
+void on_right_button() {
+    on_right_side = true;
+    pros::lcd::clear_line(0);
+    pros::lcd::set_text(0, "Auton: Right side");
+}
+
+void on_left_button() {
+    on_right_side = false;
+    pros::lcd::clear_line(0);
+    pros::lcd::set_text(0, "Auton: Left side");
+}
+
 void on_center_button() {
-    static bool pressed = false;
-    pressed = !pressed;
-    if (pressed) {
-        pros::lcd::set_text(2, "I was pressed!");
-    } else {
-        pros::lcd::clear_line(2);
-    }
+    update_lcd_info = !update_lcd_info;
 }
 
 /**
@@ -43,6 +55,13 @@ void on_center_button() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
+    pros::lcd::initialize();
+    pros::lcd::register_btn0_cb(on_left_button);
+    pros::lcd::register_btn2_cb(on_right_button);
+    pros::lcd::register_btn1_cb(on_center_button);
+
+    pros::lcd::set_text(0, "Auton: Right Side");
+
     robot::chassis =
             ChassisControllerBuilder().withMotors(
                     okapi::MotorGroup{robot::BACK_LEFT_DRIVE_MOTOR_PORT, robot::FRONT_LEFT_DRIVE_MOTOR_PORT},
@@ -50,9 +69,11 @@ void initialize() {
             .withDimensions(AbstractMotor::gearset::green, ChassisScales{{4_in, 16.1_in}, okapi::imev5GreenTPR})
             .build();
 
-    intake::init();
-    tray::init();
-    sideIndicate::init();
+    robot::chassis->getModel()->setBrakeMode(constants::OKAPI_BRAKE);
+
+    // These are here to make sure the tray and intake objects are constructed after this point
+    subsystems::Intake::getInstance();
+    subsystems::Tray::getInstance();
 
     robot::profile_controller = okapi::AsyncMotionProfileControllerBuilder()
             .withLimits({.1, .1, .1})
@@ -112,33 +133,7 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-    robot::chassis->getModel()->setBrakeMode(constants::OKAPI_BRAKE);
-    bool start_on_red = true;
-
-    // Put preload in endzone
-    robot::profile_controller->setTarget("forward");
-    robot::profile_controller->waitUntilSettled();
-    intake::setIntakeVelocity(-100);
-    pros::delay(1500);
-    intake::setIntakeVelocity(0);
-
-    // Go back to starting position
-    robot::profile_controller->setTarget("forward", true);
-    robot::profile_controller->waitUntilSettled();
-
-//    // Grab cubes
-//    intake::setIntakeVelocity(100);
-//    robot::profile_controller->setTarget("toCubes", false, true);
-//    robot::profile_controller->waitUntilSettled();
-//    intake::setIntakeVelocity(0);
-//
-//    robot::profile_controller->setTarget("toCubes", true, true);
-//    robot::profile_controller->waitUntilSettled();
-//    robot::profile_controller->setTarget("toScoreZone", false, true);
-//    robot::profile_controller->waitUntilSettled();
-
-
-    robot::chassis->getModel()->setBrakeMode(constants::OKAPI_COAST);
+    
 }
 
 /**
@@ -158,55 +153,57 @@ void autonomous() {
 void initBindings(std::vector<Binding *> & bind_list) {
     // Intake hold binding
     bind_list.emplace_back(new Binding(Button(bindings::INTAKE_BUTTON), []() {
-        intake::setIntakeVelocity(-70);
+        subsystems::Intake::getInstance()->setIntakeVelocity(70);
     }, []() {
-        intake::setIntakeVelocity(0);
+        subsystems::Intake::getInstance()->setIntakeVelocity(0);
     }, nullptr));
 
     // Outtake hold binding
     bind_list.emplace_back(new Binding(Button(bindings::OUTTAKE_BUTTON), []() {
-        intake::setIntakeVelocity(100);
+        subsystems::Intake::getInstance()->setIntakeVelocity(-70);
     }, []() {
-        intake::setIntakeVelocity(0);
+        subsystems::Intake::getInstance()->setIntakeVelocity(0);
     }, nullptr));
-
-    // Arm position bindings
-    bind_list.emplace_back(new Binding(Button(bindings::TRAY_POS_UP), []() {
-        tray::moveTrayToPosition(tray::TrayPosition::UP);
-    }, nullptr, nullptr));
-    bind_list.emplace_back(new Binding(Button(bindings::TRAY_POS_DOWN), []() {
-        tray::moveTrayToPosition(tray::TrayPosition::DOWN);
-    }, nullptr, nullptr));
 
     // Toggle tray binding
     bind_list.emplace_back(new Binding(Button(bindings::RAISE_TRAY), []() {
-        tray::setTrayVelocity(60);
+        subsystems::Tray::getInstance()->trayMoveManual(60);
     }, []() {
-        tray::setTrayVelocity(0);
+        subsystems::Tray::getInstance()->trayMoveManual(60);
     }, nullptr));
 
     bind_list.emplace_back(new Binding(Button(bindings::LOWER_TRAY), []() {
-        tray::setTrayVelocity(-60);
+        subsystems::Tray::getInstance()->trayMoveManual(-60);
     }, []() {
-        tray::setTrayVelocity(0);
+        subsystems::Tray::getInstance()->trayMoveManual(0);
     }, nullptr));
 
-    bind_list.emplace_back(new Binding(Button(bindings::PLACE_STACK), tray::deployTray, nullptr, nullptr));
+    bind_list.emplace_back(new Binding(Button(bindings::TOGGLE_TRAY),
+        subsystems::Tray::togglePosition, nullptr, nullptr));
+
+    bind_list.emplace_back(new Binding(Button(bindings::PLACE_STACK),
+        tray::deployTray, nullptr, nullptr));
 
     // TODO: Remove this before competition
-    bind_list.emplace_back(new Binding(Button(okapi::ControllerDigital::Y), autonomous, nullptr, nullptr)); // Bind for auto test
+    bind_list.emplace_back(new Binding(Button(okapi::ControllerDigital::Y),
+        autonomous, nullptr, nullptr)); // Bind for auto test
     // Note: Auto bind is blocking
-
-    /** End bind block **/
 }
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 void opcontrol() {
+    const bool DEBUG = false;
+    bool isBrake = false;
+
     okapi::Controller master(okapi::ControllerId::master);
 
-    bool isBrake = false;
     std::vector<Binding *> bind_list;
+    std::vector<subsystems::AbstractSubsystem *> systems;
+
+    systems.push_back(subsystems::Intake::getInstance());
+    systems.push_back(subsystems::Tray::getInstance());
+
     initBindings(bind_list);
     // Have to do the drive-brake toggle here because it relies on variables local to main()
     bind_list.emplace_back(new Binding(okapi::ControllerButton(bindings::DRIVE_BRAKE_TOGGLE), nullptr,
@@ -219,13 +216,25 @@ void opcontrol() {
     
     cout << "Initialization finished, entering drive loop" << endl;
     while (true) {
-        drive::opControl(master);
+        double leftY = util::powKeepSign(master.getAnalog(okapi::ControllerAnalog::leftY), 2);
+        double rightY = util::powKeepSign(master.getAnalog(okapi::ControllerAnalog::rightY), 2);
+        robot::chassis->getModel()->tank(leftY, rightY);
         
         for (Binding * b : bind_list)
             b->update();
-//        intake::printPos();
-        tray::printPos();
-        tray::update();
+
+        int lcd_line = 1; // start debug info on line 1 an increment for each subsystem
+        for (subsystems::AbstractSubsystem * system : systems) {
+            system->update();
+
+            if (update_lcd_info)
+                system->printLCD(lcd_line);
+
+            if (DEBUG)
+                system->printDebug();
+
+            lcd_line++;
+        }
 
         pros::delay(1);
     }
