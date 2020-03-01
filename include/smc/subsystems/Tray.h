@@ -9,6 +9,9 @@
 #include "okapi/api.hpp"
 #include "smc/subsystems/AbstractSubsystem.h"
 
+using std::shared_ptr;
+using std::make_shared;
+
 namespace subsystems {
 class Tray : public AbstractSubsystem {
     public:
@@ -27,6 +30,10 @@ class Tray : public AbstractSubsystem {
 
         void trayMoveManual(int motorSpeedPercent);
 
+        // this should be overriden from AbstractSubsytem, but I'll do that later, this is just a demo
+        
+        const shared_ptr<std::map<std::string, int>> getTelemetry();
+
         static void togglePosition();
 
     private:
@@ -34,7 +41,9 @@ class Tray : public AbstractSubsystem {
 
         TrayPosition current_pos;
         int limit_timeout;
-        bool did_tare;
+        std::string name;
+
+        shared_ptr<std::map<std::string, int>> telemetry;
 
         std::unique_ptr<okapi::ADIButton> tray_limit_switch;
         std::unique_ptr<okapi::Motor> tray_position_motor;

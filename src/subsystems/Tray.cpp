@@ -9,11 +9,16 @@ using std::cout;
 using std::endl;
 
 namespace subsystems {
-    Tray::Tray() : limit_timeout(0), current_pos(DOWN), did_tare(false) {
+    Tray::Tray() : limit_timeout(0), current_pos(DOWN) {
         tray_position_motor = util::initMotor(robot::TRAY_POS_MOTOR_PORT);
         tray_limit_switch = util::initLimitSwitch(robot::TRAY_POS_DOWN_LIMIT_SWITCH);
 
         tray_position_motor->tarePosition();
+
+        name = "Tray";
+        telemetry = make_shared<std::map<std::string, int>>();
+        telemetry->insert(std::pair<std::string, int>("pos", tray_position_motor->getPosition()));
+        telemetry->insert(std::pair<std::string, int>("timeout", limit_timeout));
     }
 
     Tray * Tray::getInstance() {
@@ -27,16 +32,13 @@ namespace subsystems {
             tray_position_motor->moveAbsolute(0, 1);
             current_pos = DOWN;
             limit_timeout = 50;
-            did_tare = true;
         }
         else if (limit_timeout > 0) {
-            did_tare = false;
             limit_timeout--;
         }
     }
 
     void Tray::printDebug() {
-        cout << "[DEBUG][Tray] Did tare: " << did_tare << endl;
         cout << "[DEBUG][Tray] Tray target: " << tray_position_motor->getTargetPosition() << endl;
         cout << "[DEBUG][Tray] Tray actual: " << tray_position_motor->getPosition() << endl;
     }
@@ -44,12 +46,18 @@ namespace subsystems {
     void Tray::printLCD(int line) {
         std::ostringstream out;
 
-        out << "[T] tare: " << did_tare;
-        out << ", pos: " << tray_position_motor->getPosition();
+        out << "[T] pos: " << tray_position_motor->getPosition();
         out << ", t'out: " << limit_timeout;
 
         pros::lcd::clear_line(line);
         pros::lcd::set_text(line, out.str());
+    }
+
+    const shared_ptr<std::map<std::string, int>> Tray::getTelemetry() {
+        telemetry->at("pos") = tray_position_motor->getPosition();
+        telemetry->at("timeout") = tray_position_motor->getPosition();
+
+        return telemetry;
     }
 
     void Tray::moveTrayToPosition(TrayPosition pos, bool blocking) {

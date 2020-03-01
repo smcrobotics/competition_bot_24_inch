@@ -28,5 +28,18 @@ namespace util {
     double powKeepSign(double num, double power) {
         return pow(abs(num), power) * num / abs(num);
     }
+
+    void printTelemetryToLCD(int line, const std::string type, const std::shared_ptr<std::map<std::string, int>> telemetry) {
+        std::ostringstream out;
+
+        out << "[" << type << "] " << std::endl;
+
+        for (auto it = telemetry->begin(); it != telemetry->end(); ++it) {
+            out << it->first << ": " << it->second << ". ";
+        }
+
+        pros::lcd::clear_line(line);
+        pros::lcd::set_text(line, out.str());
+    }
 }
 
