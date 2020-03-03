@@ -9,6 +9,7 @@ namespace tray {
         subsystems::Intake * intake = subsystems::Intake::getInstance();
         subsystems::Tray * tray = subsystems::Tray::getInstance();
         
+        // TODO: fix this, for some reason the velocity is not being set
         intake->setIntakeVelocity(-25);
         tray->moveTrayToPosition(subsystems::Tray::UP);
         pros::delay(1000);

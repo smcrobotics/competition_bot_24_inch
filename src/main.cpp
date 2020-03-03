@@ -169,7 +169,7 @@ void initBindings(std::vector<Binding *> & bind_list) {
     bind_list.emplace_back(new Binding(Button(bindings::RAISE_TRAY), []() {
         subsystems::Tray::getInstance()->trayMoveManual(60);
     }, []() {
-        subsystems::Tray::getInstance()->trayMoveManual(60);
+        subsystems::Tray::getInstance()->trayMoveManual(0);
     }, nullptr));
 
     bind_list.emplace_back(new Binding(Button(bindings::LOWER_TRAY), []() {
