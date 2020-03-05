@@ -11,9 +11,12 @@ using std::cout;
 using std::endl;
 
 namespace subsystems {
-    Intake::Intake() : current_intake_percent(0), current_intake_voltage(0) {
-        left_intake_motor = util::initMotor(robot::INTAKE_MOTOR_PORT_LEFT, okapi::AbstractMotor::gearset::blue);
-        right_intake_motor = util::initMotor(robot::INTAKE_MOTOR_PORT_RIGHT, okapi::AbstractMotor::gearset::blue);
+    Intake::Intake() : current_percent(0), current_voltage(0) {
+        left_motor = util::initMotor(robot::INTAKE_MOTOR_PORT_LEFT);
+        right_motor = util::initMotor(robot::INTAKE_MOTOR_PORT_RIGHT);
+        pos_motor = util::initMotor(robot::INTAKE_POS_PORT);
+
+        intakeState = Intake::CLOSED;
     }
 
     Intake * Intake::getInstance() {
@@ -22,25 +25,44 @@ namespace subsystems {
     }
 
     void Intake::update() {
-        left_intake_motor->moveVelocity(current_intake_voltage);
-        right_intake_motor->moveVelocity(current_intake_voltage);
+        left_motor->moveVelocity(current_voltage);
+        right_motor->moveVelocity(current_voltage);
     }
 
     void Intake::printDebug() {
-        cout << "[DEBUG][Intake] Intake velocity: " << current_intake_percent << endl;
-        cout << "[DEBUG][Intake] Intake voltage: " << current_intake_voltage << endl;
+        cout << "[DEBUG][Intake] Intake velocity: " << current_percent << endl;
+        cout << "[DEBUG][Intake] Intake voltage: " << current_voltage << endl;
+        cout << "[DEBUG][Intake] Intake state: " << ((bool) intakeState ? "Open" : "Closed") << endl;
     }
 
     void Intake::printLCD(int line) {
         std::ostringstream out;
-        out << "[I] Current %: " << current_intake_percent;
+        out << "[I] Current %: " << current_percent;
+        out << ", state: " << (bool) clawState;
 
         pros::lcd::clear_line(line);
         pros::lcd::set_text(line, out.str());
     }
 
+    // TODO: make a voltage max constant
     void Intake::setIntakeVelocity(int percent) {
-        current_intake_voltage = ((float) percent / 100.0f) * 12000;
-        current_intake_percent = percent;
+        current_voltage = ((float) percent / 100.0f) * 12000;
+        current_percent = percent;
+    }
+
+    void setIntakeState(IntakeState setClawState) {
+        if (state == IntakeState::OPEN)
+            // TODO: tune encoder positions
+            // TODO: tune move speed
+            pos_motor->moveAbsolute(robot::INTAKE_POS_OPEN, constants::INTAKE_MOVE_SPEED);
+        else
+            pos_motor->moveAbsolute(robot::INTAKE_POS_CLOSED, constants::INTAKE_MOVE_SPEED);
+
+        clawState = state;
+    }
+
+    void Intake::toggleIntake() {
+        auto intake = getInstance();
+        intake->setIntakeState((IntakeState) !((bool) intake->intakeState));
     }
 }

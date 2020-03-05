@@ -20,12 +20,16 @@ namespace robot {
     /* Begin intake block */
     const int INTAKE_MOTOR_PORT_LEFT = -9;
     const int INTAKE_MOTOR_PORT_RIGHT = 2;
+
+    const int INTAKE_POS_PORT = 12;
+    const int INTAKE_POS_OPEN = 0; // TODO: place holder value
+    const int INTAKE_POS_CLOSED = 100; // TODO: place holder value
     /* End intake block */
 
 
     /* Begin tray block */
     const int TRAY_POS_MOTOR_PORT = 19;
-    const int TRAY_MOTOR_POS_UP = 750; // TODO: Placeholder value
+    const int TRAY_MOTOR_POS_UP = 750;
 
     const char TRAY_POS_DOWN_LIMIT_SWITCH = 'H';
     /* End tray block */
@@ -41,6 +45,7 @@ namespace bindings {
     // TODO: when all buttons have been mapped, make a comment describing what each one does
     const auto INTAKE_BUTTON  = okapi::ControllerDigital::R1;
     const auto OUTTAKE_BUTTON = okapi::ControllerDigital::L1;
+    const auto TOGGLE_INTAKE = okapi::ControllerDigital::X;
 
 
     const auto TRAY_POS_UP = okapi::ControllerDigital::up;
@@ -52,7 +57,6 @@ namespace bindings {
     const auto TOGGLE_TRAY = okapi::ControllerDigital::Y;
     const auto RAISE_TRAY = okapi::ControllerDigital::left;
 
-
     const auto DRIVE_BRAKE_TOGGLE = okapi::ControllerDigital::B;
 }
 
@@ -60,6 +64,8 @@ namespace constants {
     const int MOTOR_MOVE_MAX = 127;
 
     const int AUTO_TRAY_SPEED = 50;
+
+    const int INTAKE_MOVE_SPEED = 100;
 
     const auto OKAPI_BRAKE = okapi::AbstractMotor::brakeMode::brake;
     const auto OKAPI_COAST = okapi::AbstractMotor::brakeMode::coast;

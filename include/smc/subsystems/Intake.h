@@ -12,6 +12,8 @@
 namespace subsystems {
 class Intake : public AbstractSubsystem {
     public:
+        enum IntakeState { OPEN = 1, CLOSED = 0 };
+
         static Intake * getInstance();
         Intake(const Intake &) = delete;
         void operator=(const Intake & lhs) = delete;
@@ -19,15 +21,23 @@ class Intake : public AbstractSubsystem {
         void update() override;
         void printDebug() override;
         void printLCD(int line) override;
+
         void setIntakeVelocity(int percent);
+
+        void setIntakeState(IntakeState pos);
+        static void toggleIntake();
 
     private:
         Intake();
 
-        float current_intake_voltage;
-        int current_intake_percent;
-        std::unique_ptr<okapi::Motor> left_intake_motor;
-        std::unique_ptr<okapi::Motor> right_intake_motor;
+        IntakeState intakeState;
+
+        float current_voltage;
+        int current_percent;
+        std::unique_ptr<okapi::Motor> left_motor;
+        std::unique_ptr<okapi::Motor> right_motor;
+
+        std::unique_ptr<okapi::Motor> pos_motor;
     };
 }
 

@@ -184,9 +184,12 @@ void initBindings(std::vector<Binding *> & bind_list) {
     bind_list.emplace_back(new Binding(Button(bindings::PLACE_STACK),
         tray::deployTray, nullptr, nullptr));
 
-    // TODO: Remove this before competition
-    bind_list.emplace_back(new Binding(Button(okapi::ControllerDigital::Y),
-        autonomous, nullptr, nullptr)); // Bind for auto test
+    bind_list.emplace_back(new Binding(Button(bindings::TOGGLE_INTAKE),
+        intake::toggleIntake, nullptr, nullptr));
+
+    // // TODO: Remove this before competition
+    // bind_list.emplace_back(new Binding(Button(okapi::ControllerDigital::Y),
+    //     autonomous, nullptr, nullptr)); // Bind for auto test
     // Note: Auto bind is blocking
 }
 
