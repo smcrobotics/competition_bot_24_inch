@@ -9,11 +9,11 @@
 1. L2: N/A
 1. Left Joystick: Left side drive motors
 1. Right Joystick: Right side drive motors
-1. down: intake pos down
+1. down: tray pos down
 1. left: raise tray
-1. up: intake pos up
+1. up: tray pos up
 1. right: lower tray
-1. Y: N/A
+1. Y: toggle tray
 1. X: N/A
 1. A: place stack
 1. B: drive brake toggle
