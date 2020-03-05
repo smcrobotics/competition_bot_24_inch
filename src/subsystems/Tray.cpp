@@ -22,9 +22,11 @@ namespace subsystems {
     }
 
     void Tray::update() {
-        if (tray_limit_switch->isPressed() && limit_timeout == 0 && tray_position_motor->getActualVelocity() < 0) {
+        if (tray_limit_switch->isPressed() && limit_timeout == 0) {
             tray_position_motor->tarePosition();
-            tray_position_motor->moveAbsolute(0, 1);
+            if (tray_position_motor->getActualVelocity() < 0) {
+                tray_position_motor->moveAbsolute(0, 1);
+            }
             current_pos = DOWN;
             limit_timeout = 50;
         }
@@ -70,10 +72,9 @@ namespace subsystems {
     }
 
     void Tray::trayMoveManual(int motorSpeedPercent) {
-        if (tray_limit_switch->isPressed() && motorSpeedPercent < 0) {
-            return;
+        if (!(tray_limit_switch->isPressed() && motorSpeedPercent < 0)) {
+            tray_position_motor->moveVoltage((int) (((float) motorSpeedPercent / 100.0f) * 12000));
         }
-        tray_position_motor->moveVoltage((int) (((float) motorSpeedPercent / 100.0f) * 12000));
     }
 
     void Tray::togglePosition() {
