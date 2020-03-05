@@ -17,8 +17,6 @@ namespace util {
     std::unique_ptr<okapi::ADIButton> initLimitSwitch(char port);
 
     double powKeepSign(double num, double power);
-
-    void printTelemetryToLCD(int line, const std::string& type, const std::shared_ptr<std::map<std::string, int>> telemetry);
 }
 
 #endif //ROBOT_CODE_UTIL_H

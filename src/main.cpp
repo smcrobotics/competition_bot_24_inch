@@ -223,17 +223,12 @@ void opcontrol() {
         for (Binding * b : bind_list)
             b->update();
 
-        int lcd_line = 1; // start debug info on line 1 and increment for each subsystem
+        int lcd_line = 1; // start debug info on line 1 an increment for each subsystem
         for (subsystems::AbstractSubsystem * system : systems) {
             system->update();
 
-            if (update_lcd_info) {
+            if (update_lcd_info)
                 system->printLCD(lcd_line);
-                // this is commented out because the functionality is only implemented in Tray so far, but
-                // this is generally how it would look; does same thing as above, but more abstracted and
-                // potentially less duplicated code
-                // printLCD(line, system->name, system->getTelemetry());
-            }
 
             if (DEBUG)
                 system->printDebug();
