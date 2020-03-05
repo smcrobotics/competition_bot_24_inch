@@ -34,7 +34,6 @@ class Tray : public AbstractSubsystem {
 
         TrayPosition current_pos;
         int limit_timeout;
-        bool did_tare;
 
         std::unique_ptr<okapi::ADIButton> tray_limit_switch;
         std::unique_ptr<okapi::Motor> tray_position_motor;
