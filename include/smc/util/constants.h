@@ -18,7 +18,7 @@ namespace robot {
 
 
     /* Begin intake block */
-    const int INTAKE_MOTOR_PORT_LEFT = -9;
+    const int INTAKE_MOTOR_PORT_LEFT = -18;
     const int INTAKE_MOTOR_PORT_RIGHT = 2;
 
     const int INTAKE_POS_PORT = 12;

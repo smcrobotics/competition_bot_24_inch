@@ -181,11 +181,11 @@ void initBindings(std::vector<Binding *> & bind_list) {
     bind_list.emplace_back(new Binding(Button(bindings::TOGGLE_TRAY),
         subsystems::Tray::togglePosition, nullptr, nullptr));
 
-    bind_list.emplace_back(new Binding(Button(bindings::PLACE_STACK),
-        tray::deployTray, nullptr, nullptr));
+//    bind_list.emplace_back(new Binding(Button(bindings::PLACE_STACK),
+//        tray::deployTray, nullptr, nullptr));
 
     bind_list.emplace_back(new Binding(Button(bindings::TOGGLE_INTAKE),
-        intake::toggleIntake, nullptr, nullptr));
+        subsystems::Intake::toggleIntake, nullptr, nullptr));
 
     // // TODO: Remove this before competition
     // bind_list.emplace_back(new Binding(Button(okapi::ControllerDigital::Y),

@@ -38,7 +38,7 @@ namespace subsystems {
     void Intake::printLCD(int line) {
         std::ostringstream out;
         out << "[I] Current %: " << current_percent;
-        out << ", state: " << (bool) clawState;
+        out << ", state: " << (bool) intakeState;
 
         pros::lcd::clear_line(line);
         pros::lcd::set_text(line, out.str());
@@ -50,15 +50,15 @@ namespace subsystems {
         current_percent = percent;
     }
 
-    void setIntakeState(IntakeState setClawState) {
-        if (state == IntakeState::OPEN)
+    void Intake::setIntakeState(IntakeState targetState) {
+        if (targetState == IntakeState::OPEN)
             // TODO: tune encoder positions
             // TODO: tune move speed
             pos_motor->moveAbsolute(robot::INTAKE_POS_OPEN, constants::INTAKE_MOVE_SPEED);
         else
             pos_motor->moveAbsolute(robot::INTAKE_POS_CLOSED, constants::INTAKE_MOVE_SPEED);
 
-        clawState = state;
+        intakeState = targetState;
     }
 
     void Intake::toggleIntake() {
