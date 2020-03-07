@@ -20,6 +20,7 @@ typedef okapi::ControllerButton Button;
 /* Begin forward declaration block */
 std::shared_ptr<okapi::AsyncMotionProfileController> robot::profile_controller;
 std::shared_ptr<okapi::ChassisController> robot::chassis;
+bool robot::can_move = true;
 /* End forward declaration block */
 
 
@@ -133,7 +134,10 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-    
+    robot::chassis->moveDistance(3_ft);
+    subsystems::Intake::getInstance()->setIntakeVelocity(-100);
+    pros::delay(3000);
+    robot::chassis->moveDistance(-3_ft);
 }
 
 /**
@@ -173,7 +177,7 @@ void initBindings(std::vector<Binding *> & bind_list) {
     }, nullptr));
 
     bind_list.emplace_back(new Binding(Button(bindings::LOWER_TRAY), []() {
-        subsystems::Tray::getInstance()->trayMoveManual(-60);
+        subsystems::Tray::getInstance()->trayMoveManual(-35);
     }, []() {
         subsystems::Tray::getInstance()->trayMoveManual(0);
     }, nullptr));
@@ -181,8 +185,9 @@ void initBindings(std::vector<Binding *> & bind_list) {
     bind_list.emplace_back(new Binding(Button(bindings::TOGGLE_TRAY),
         subsystems::Tray::togglePosition, nullptr, nullptr));
 
-   bind_list.emplace_back(new Binding(Button(bindings::PLACE_STACK),
-       tray::deployTray, nullptr, nullptr));
+   bind_list.emplace_back(new Binding(Button(bindings::PLACE_STACK), commands::handleTaskThing, nullptr, nullptr));
+
+//    bind_list.emplace_back(new Binding(Button(bindings::PLACE_STACK), commands::deployTray, nullptr, nullptr));
 
     bind_list.emplace_back(new Binding(Button(bindings::TOGGLE_INTAKE),
         subsystems::Intake::toggleIntake, nullptr, nullptr));
@@ -230,17 +235,17 @@ void opcontrol() {
         master.setText(0, 0, isBrake ? "Brake mode on " : "Brake mode off");
         }, nullptr));
 
-    
     cout << "Initialization finished, entering drive loop" << endl;
     while (true) {
-        double leftY = util::powKeepSign(master.getAnalog(okapi::ControllerAnalog::leftY), 2);
-        double rightY = util::powKeepSign(master.getAnalog(okapi::ControllerAnalog::rightY), 2);
-        robot::chassis->getModel()->tank(leftY, rightY);
+        if (robot::can_move) {
+            double leftY = util::powKeepSign(master.getAnalog(okapi::ControllerAnalog::leftY), 2);
+            double rightY = util::powKeepSign(master.getAnalog(okapi::ControllerAnalog::rightY), 2);
+            robot::chassis->getModel()->tank(leftY, rightY);
+        }
         
         for (Binding * b : bind_list)
             b->update();
 
-        // cout << "motherfucking bullshit position: " << subsystems::Tray::getInstance()->getTrayPosition() << endl;
 
         int lcd_line = 1; // start debug info on line 1 an increment for each subsystem
         for (subsystems::AbstractSubsystem * system : systems) {

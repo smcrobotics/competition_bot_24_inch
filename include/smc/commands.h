@@ -12,8 +12,11 @@
 #include "smc/subsystems/Tray.h"
 #include "smc/subsystems/Intake.h"
 
-namespace tray {
+namespace commands {
     void deployTray();
+    void handleTaskThing();
+
+
 }
 
 #endif //ROBOT_CODE_TASKS_H

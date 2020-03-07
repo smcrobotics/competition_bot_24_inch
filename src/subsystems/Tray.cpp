@@ -51,20 +51,30 @@ namespace subsystems {
         pros::lcd::set_text(line, out.str());
     }
 
-    void Tray::moveTrayToPosition(TrayPosition pos, bool blocking) {
+    void Tray::moveTrayToPosition(TrayPosition pos, int speed, bool blocking) {
+        if (speed < 0)
+            return;
+
         if (pos == UP) {
-            tray_position_motor->moveAbsolute(robot::TRAY_MOTOR_POS_UP, 60); // TODO: change to constants::AUTO_TRAY_SPEED
+            tray_position_motor->moveAbsolute(robot::TRAY_MOTOR_POS_UP, speed); // TODO: change to constants::AUTO_TRAY_SPEED
             limit_timeout = 200;
             current_pos = UP;
         } else if (pos == DOWN) {
-            tray_position_motor->moveAbsolute(0, 60); // TODO: change to constants::AUTO_TRAY_SPEED
+            tray_position_motor->moveAbsolute(0, speed); // TODO: change to constants::AUTO_TRAY_SPEED
             current_pos = DOWN;
+        } else if (pos == INTER) {
+            tray_position_motor->moveAbsolute(robot::TRAY_MOTOR_INTERMEDIATE_POS, speed);
+            current_pos = INTER;
         }
 
         if (blocking) { // choose whether to block other tasks from performing
-            while (tray_position_motor->getActualVelocity() != 0)
-                pros::delay(10);
+            while (tray_position_motor->getPositionError() > 10)
+                pros::delay(5);
         }
+    }
+
+    void Tray::moveTrayToPosition(TrayPosition pos, bool blocking) {
+        moveTrayToPosition(pos, 60, blocking);
     }
 
     void Tray::moveTrayToPosition(TrayPosition pos) {

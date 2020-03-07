@@ -22,19 +22,20 @@ namespace robot {
     const int INTAKE_MOTOR_PORT_RIGHT = 2;
 
     const int INTAKE_POS_PORT = 20;
-    const int INTAKE_POS_CLOSED = 0; // TODO: place holder value
-    const int INTAKE_POS_OPEN = 1480; // TODO: place holder value
+    const int INTAKE_POS_CLOSED = 0;
+    const int INTAKE_POS_OPEN = 1400;
     /* End intake block */
 
 
     /* Begin tray block */
     const int TRAY_POS_MOTOR_PORT = 19;
-    const int TRAY_MOTOR_INTERMEDIATE_POS = 1000;
-    const int TRAY_MOTOR_POS_UP = 1400;
+    const int TRAY_MOTOR_INTERMEDIATE_POS = 700;
+    const int TRAY_MOTOR_POS_UP = 1360;
 
     const char TRAY_POS_DOWN_LIMIT_SWITCH = 'H';
     /* End tray block */
 
+    extern bool can_move;
 
     /* Begin random global pointer block */
     extern std::shared_ptr<okapi::ChassisController> chassis;

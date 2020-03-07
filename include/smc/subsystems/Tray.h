@@ -12,7 +12,7 @@
 namespace subsystems {
 class Tray : public AbstractSubsystem {
     public:
-        enum TrayPosition { UP = 1, DOWN = 0 };
+        enum TrayPosition { UP = 1, INTER = 2, DOWN = 0 };
 
         static Tray * getInstance();
         Tray(const Tray &) = delete;
@@ -24,6 +24,7 @@ class Tray : public AbstractSubsystem {
 
         int getTrayPosition();
 
+        void moveTrayToPosition(TrayPosition pos, int speed, bool blocking);
         void moveTrayToPosition(TrayPosition pos, bool blocking);
         void moveTrayToPosition(TrayPosition pos);
 
