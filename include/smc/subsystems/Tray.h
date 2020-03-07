@@ -22,6 +22,8 @@ class Tray : public AbstractSubsystem {
         void printDebug() override;
         void printLCD(int line) override;
 
+        int getTrayPosition();
+
         void moveTrayToPosition(TrayPosition pos, bool blocking);
         void moveTrayToPosition(TrayPosition pos);
 

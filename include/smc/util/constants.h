@@ -22,14 +22,15 @@ namespace robot {
     const int INTAKE_MOTOR_PORT_RIGHT = 2;
 
     const int INTAKE_POS_PORT = 20;
-    const int INTAKE_POS_OPEN = 0; // TODO: place holder value
-    const int INTAKE_POS_CLOSED = 100; // TODO: place holder value
+    const int INTAKE_POS_CLOSED = 0; // TODO: place holder value
+    const int INTAKE_POS_OPEN = 1480; // TODO: place holder value
     /* End intake block */
 
 
     /* Begin tray block */
     const int TRAY_POS_MOTOR_PORT = 19;
-    const int TRAY_MOTOR_POS_UP = 750;
+    const int TRAY_MOTOR_INTERMEDIATE_POS = 1000;
+    const int TRAY_MOTOR_POS_UP = 1400;
 
     const char TRAY_POS_DOWN_LIMIT_SWITCH = 'H';
     /* End tray block */
@@ -67,7 +68,7 @@ namespace constants {
 
     const int AUTO_TRAY_SPEED = 50;
 
-    const int INTAKE_MOVE_SPEED = 100;
+    const int INTAKE_MOVE_SPEED = 30;
 
     const auto OKAPI_BRAKE = okapi::AbstractMotor::brakeMode::brake;
     const auto OKAPI_COAST = okapi::AbstractMotor::brakeMode::coast;

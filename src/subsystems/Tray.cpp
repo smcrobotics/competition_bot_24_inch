@@ -10,7 +10,7 @@ using std::endl;
 
 namespace subsystems {
     Tray::Tray() : limit_timeout(0), current_pos(DOWN) {
-        tray_position_motor = util::initMotor(robot::TRAY_POS_MOTOR_PORT);
+        tray_position_motor = util::initMotor(robot::TRAY_POS_MOTOR_PORT, AbstractMotor::gearset::red);
         tray_limit_switch = util::initLimitSwitch(robot::TRAY_POS_DOWN_LIMIT_SWITCH);
 
         tray_position_motor->tarePosition();
@@ -62,7 +62,7 @@ namespace subsystems {
         }
 
         if (blocking) { // choose whether to block other tasks from performing
-            while (!tray_position_motor->isStopped())
+            while (tray_position_motor->getActualVelocity() != 0)
                 pros::delay(10);
         }
     }
@@ -78,6 +78,10 @@ namespace subsystems {
     }
 
     void Tray::togglePosition() {
-        getInstance()->moveTrayToPosition((TrayPosition) getInstance()->current_pos);
+        getInstance()->moveTrayToPosition((TrayPosition) !getInstance()->current_pos);
+    }
+
+    int Tray::getTrayPosition() {
+        return tray_position_motor->getPosition();
     }
 }

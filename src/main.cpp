@@ -181,22 +181,22 @@ void initBindings(std::vector<Binding *> & bind_list) {
     bind_list.emplace_back(new Binding(Button(bindings::TOGGLE_TRAY),
         subsystems::Tray::togglePosition, nullptr, nullptr));
 
-//    bind_list.emplace_back(new Binding(Button(bindings::PLACE_STACK),
-//        tray::deployTray, nullptr, nullptr));
+   bind_list.emplace_back(new Binding(Button(bindings::PLACE_STACK),
+       tray::deployTray, nullptr, nullptr));
 
-    // bind_list.emplace_back(new Binding(Button(bindings::TOGGLE_INTAKE),
-    //     subsystems::Intake::toggleIntake, nullptr, nullptr));
+    bind_list.emplace_back(new Binding(Button(bindings::TOGGLE_INTAKE),
+        subsystems::Intake::toggleIntake, nullptr, nullptr));
 
     // Toggle intake position motor
     bind_list.emplace_back(new Binding(Button(bindings::MOVE_INTAKE_TO_OPEN), []() {
-        subsystems::Intake::getInstance()->intakeMoveManual(30);
+        subsystems::Intake::getInstance()->intakeMoveManual(constants::INTAKE_MOVE_SPEED);
     }, []() {
         subsystems::Intake::getInstance()->intakeMoveManual(0);
     }, nullptr));
 
     // Toggle intake position motor
     bind_list.emplace_back(new Binding(Button(bindings::MOVE_INTAKE_TO_CLOSED), []() {
-        subsystems::Intake::getInstance()->intakeMoveManual(-30);
+        subsystems::Intake::getInstance()->intakeMoveManual(-constants::INTAKE_MOVE_SPEED);
     }, []() {
         subsystems::Intake::getInstance()->intakeMoveManual(0);
     }, nullptr));
@@ -239,6 +239,8 @@ void opcontrol() {
         
         for (Binding * b : bind_list)
             b->update();
+
+        // cout << "motherfucking bullshit position: " << subsystems::Tray::getInstance()->getTrayPosition() << endl;
 
         int lcd_line = 1; // start debug info on line 1 an increment for each subsystem
         for (subsystems::AbstractSubsystem * system : systems) {
