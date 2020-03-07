@@ -184,8 +184,22 @@ void initBindings(std::vector<Binding *> & bind_list) {
 //    bind_list.emplace_back(new Binding(Button(bindings::PLACE_STACK),
 //        tray::deployTray, nullptr, nullptr));
 
-    bind_list.emplace_back(new Binding(Button(bindings::TOGGLE_INTAKE),
-        subsystems::Intake::toggleIntake, nullptr, nullptr));
+    // bind_list.emplace_back(new Binding(Button(bindings::TOGGLE_INTAKE),
+    //     subsystems::Intake::toggleIntake, nullptr, nullptr));
+
+    // Toggle intake position motor
+    bind_list.emplace_back(new Binding(Button(bindings::MOVE_INTAKE_TO_OPEN), []() {
+        subsystems::Intake::getInstance()->intakeMoveManual(30);
+    }, []() {
+        subsystems::Intake::getInstance()->intakeMoveManual(0);
+    }, nullptr));
+
+    // Toggle intake position motor
+    bind_list.emplace_back(new Binding(Button(bindings::MOVE_INTAKE_TO_CLOSED), []() {
+        subsystems::Intake::getInstance()->intakeMoveManual(-30);
+    }, []() {
+        subsystems::Intake::getInstance()->intakeMoveManual(0);
+    }, nullptr));
 
     // // TODO: Remove this before competition
     // bind_list.emplace_back(new Binding(Button(okapi::ControllerDigital::Y),

@@ -50,19 +50,24 @@ namespace subsystems {
         current_percent = percent;
     }
 
-    void Intake::setIntakeState(IntakeState targetState) {
-        if (targetState == IntakeState::OPEN)
-            // TODO: tune encoder positions
-            // TODO: tune move speed
-            pos_motor->moveAbsolute(robot::INTAKE_POS_OPEN, constants::INTAKE_MOVE_SPEED);
-        else
-            pos_motor->moveAbsolute(robot::INTAKE_POS_CLOSED, constants::INTAKE_MOVE_SPEED);
+    // void Intake::setIntakeState(IntakeState targetState) {
+    //     if (targetState == IntakeState::OPEN)
+    //         // TODO: tune encoder positions
+    //         // TODO: tune move speed
+    //         pos_motor->moveAbsolute(robot::INTAKE_POS_OPEN, constants::INTAKE_MOVE_SPEED);
+    //     else
+    //         pos_motor->moveAbsolute(robot::INTAKE_POS_CLOSED, constants::INTAKE_MOVE_SPEED);
 
-        intakeState = targetState;
-    }
+    //     intakeState = targetState;
+    // }
 
-    void Intake::toggleIntake() {
-        auto intake = getInstance();
-        intake->setIntakeState((IntakeState) !((bool) intake->intakeState));
+    // void Intake::toggleIntake() {
+    //     auto intake = getInstance();
+    //     intake->setIntakeState((IntakeState) !((bool) intake->intakeState));
+    // }
+
+    void Intake::intakeMoveManual(int motorSpeedPercent) {
+        cout << "intake move pressed" << endl;
+        pos_motor->moveVoltage((int) (((float) motorSpeedPercent / 100.0f) * 12000));
     }
 }

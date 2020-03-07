@@ -10,7 +10,7 @@
 using namespace okapi;
 namespace robot {
     /* Begin drive motor block */
-    const int FRONT_LEFT_DRIVE_MOTOR_PORT = 20;
+    const int FRONT_LEFT_DRIVE_MOTOR_PORT = 12;
     const int FRONT_RIGHT_DRIVE_MOTOR_PORT = -11;
     const int BACK_LEFT_DRIVE_MOTOR_PORT = 10;
     const int BACK_RIGHT_DRIVE_MOTOR_PORT = -1;
@@ -21,7 +21,7 @@ namespace robot {
     const int INTAKE_MOTOR_PORT_LEFT = -18;
     const int INTAKE_MOTOR_PORT_RIGHT = 2;
 
-    const int INTAKE_POS_PORT = 12;
+    const int INTAKE_POS_PORT = 20;
     const int INTAKE_POS_OPEN = 0; // TODO: place holder value
     const int INTAKE_POS_CLOSED = 100; // TODO: place holder value
     /* End intake block */
@@ -46,6 +46,8 @@ namespace bindings {
     const auto INTAKE_BUTTON  = okapi::ControllerDigital::R1;
     const auto OUTTAKE_BUTTON = okapi::ControllerDigital::L1;
     const auto TOGGLE_INTAKE = okapi::ControllerDigital::X;
+    const auto MOVE_INTAKE_TO_OPEN = okapi::ControllerDigital::R2;
+    const auto MOVE_INTAKE_TO_CLOSED = okapi::ControllerDigital::L2;
 
 
     const auto TRAY_POS_UP = okapi::ControllerDigital::up;

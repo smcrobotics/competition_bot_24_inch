@@ -26,6 +26,7 @@ class Intake : public AbstractSubsystem {
 
         void setIntakeState(IntakeState pos);
         static void toggleIntake();
+        void intakeMoveManual(int motorSpeedPercent);
 
     private:
         Intake();
