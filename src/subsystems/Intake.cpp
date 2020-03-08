@@ -71,6 +71,10 @@ namespace subsystems {
         pos_motor->moveVoltage((int) (((float) motorSpeedPercent / 100.0f) * 12000));
     }
 
+    void Intake::freeze() {
+        pos_motor->moveAbsolute(pos_motor->getPosition(), 5);
+    }
+
     int Intake::getIntakePosition() {
         return pos_motor->getPosition();
     }

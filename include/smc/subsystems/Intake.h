@@ -22,6 +22,8 @@ class Intake : public AbstractSubsystem {
         void printDebug() override;
         void printLCD(int line) override;
 
+        void freeze();
+
         int getIntakePosition();
 
         void setIntakeVelocity(int percent);

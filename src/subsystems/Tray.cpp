@@ -81,6 +81,10 @@ namespace subsystems {
         moveTrayToPosition(pos, false);
     }
 
+    void Tray::freeze() {
+        tray_position_motor->moveAbsolute(tray_position_motor->getPosition(), 5);
+    }
+
     void Tray::trayMoveManual(int motorSpeedPercent) {
         if (!(tray_limit_switch->isPressed() && motorSpeedPercent < 0)) {
             tray_position_motor->moveVoltage((int) (((float) motorSpeedPercent / 100.0f) * 12000));
