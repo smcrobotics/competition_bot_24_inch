@@ -56,17 +56,18 @@ namespace subsystems {
             return;
 
         if (pos == UP) {
-            tray_position_motor->moveAbsolute(robot::TRAY_MOTOR_POS_UP, speed); // TODO: change to constants::AUTO_TRAY_SPEED
+            tray_position_motor->moveAbsolute(robot::TRAY_MOTOR_POS_UP, speed);
             limit_timeout = 200;
             current_pos = UP;
         } else if (pos == DOWN) {
-            tray_position_motor->moveAbsolute(0, speed); // TODO: change to constants::AUTO_TRAY_SPEED
+            tray_position_motor->moveAbsolute(0, speed);
             current_pos = DOWN;
         } else if (pos == INTER) {
             tray_position_motor->moveAbsolute(robot::TRAY_MOTOR_INTERMEDIATE_POS, speed);
             current_pos = INTER;
         }
 
+        // TODO: There should probably be a watchdog timer here
         if (blocking) { // choose whether to block other tasks from performing
             while (tray_position_motor->getPositionError() > 10)
                 pros::delay(5);
@@ -87,15 +88,11 @@ namespace subsystems {
 
     void Tray::trayMoveManual(int motorSpeedPercent) {
         if (!(tray_limit_switch->isPressed() && motorSpeedPercent < 0)) {
-            tray_position_motor->moveVoltage((int) (((float) motorSpeedPercent / 100.0f) * 12000));
+            tray_position_motor->moveVoltage((int) (((float) motorSpeedPercent / 100.0f) * constants::MOTOR_MAX_VOLTAGE));
         }
     }
 
     void Tray::togglePosition() {
         getInstance()->moveTrayToPosition((TrayPosition) !getInstance()->current_pos);
-    }
-
-    int Tray::getTrayPosition() {
-        return tray_position_motor->getPosition();
     }
 }

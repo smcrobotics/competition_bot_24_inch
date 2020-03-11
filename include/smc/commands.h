@@ -15,8 +15,6 @@
 namespace commands {
     void deployTray();
     void handleTaskThing();
-
-
 }
 
 #endif //ROBOT_CODE_TASKS_H

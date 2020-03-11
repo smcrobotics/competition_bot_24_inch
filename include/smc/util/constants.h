@@ -66,6 +66,7 @@ namespace bindings {
 
 namespace constants {
     const int MOTOR_MOVE_MAX = 127;
+    const int MOTOR_MAX_VOLTAGE = 12000;
 
     const int AUTO_TRAY_SPEED = 50;
 

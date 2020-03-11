@@ -24,8 +24,6 @@ class Intake : public AbstractSubsystem {
 
         void freeze();
 
-        int getIntakePosition();
-
         void setIntakeVelocity(int percent);
 
         void setIntakeState(IntakeState pos);
@@ -41,7 +39,6 @@ class Intake : public AbstractSubsystem {
         int current_percent;
         std::unique_ptr<okapi::Motor> left_motor;
         std::unique_ptr<okapi::Motor> right_motor;
-
         std::unique_ptr<okapi::Motor> pos_motor;
     };
 }

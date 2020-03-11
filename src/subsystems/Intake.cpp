@@ -44,16 +44,13 @@ namespace subsystems {
         pros::lcd::set_text(line, out.str());
     }
 
-    // TODO: make a voltage max constant
     void Intake::setIntakeVelocity(int percent) {
-        current_voltage = ((float) percent / 100.0f) * 12000;
+        current_voltage = ((float) percent / 100.0f) * constants::MOTOR_MAX_VOLTAGE;
         current_percent = percent;
     }
 
     void Intake::setIntakeState(IntakeState targetState) {
         if (targetState == IntakeState::OPEN)
-            // TODO: tune encoder positions
-            // TODO: tune move speed
             pos_motor->moveAbsolute(robot::INTAKE_POS_OPEN, constants::INTAKE_MOVE_SPEED);
         else
             pos_motor->moveAbsolute(robot::INTAKE_POS_CLOSED, constants::INTAKE_MOVE_SPEED);
@@ -67,15 +64,10 @@ namespace subsystems {
     }
 
     void Intake::intakeMoveManual(int motorSpeedPercent) {
-        cout << "intake move pressed" << endl;
-        pos_motor->moveVoltage((int) (((float) motorSpeedPercent / 100.0f) * 12000));
+        pos_motor->moveVoltage((int) (((float) motorSpeedPercent / 100.0f) * constants::MOTOR_MAX_VOLTAGE));
     }
 
     void Intake::freeze() {
         pos_motor->moveAbsolute(pos_motor->getPosition(), 5);
-    }
-
-    int Intake::getIntakePosition() {
-        return pos_motor->getPosition();
     }
 }

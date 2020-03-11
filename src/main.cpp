@@ -80,29 +80,6 @@ void initialize() {
             .withLimits({.1, .1, .1})
             .withOutput(robot::chassis)
             .buildMotionProfileController();
-
-
-    /*// // first point in list of waypoints gives robot's location with respect to origin
-    // // second waypoint is first to be executed
-    // // x axis is forward, y axis is to the left */
-
-    // robot::profile_controller->generatePath({
-    //     {268.5_cm, 0_cm, 180_deg},
-    //     {350.3_cm, 0_cm, 180_deg}}, "forward"
-    // );
-
-    // robot::profile_controller->generatePath({
-    //     {268.5_cm, 0_cm, 180_deg},
-    //     {246.6_cm, 126.7_cm, 0_deg},
-    //     {178.6_cm, 126.7_cm, 0_deg},
-    //     {67_cm, 126.7_cm, 0_deg}
-    // }, "toCubes");
-
-    // robot::profile_controller->generatePath({
-    //     {268.5_cm, 0_cm, 180_deg},
-    //     {350.3_cm, 0_cm, 180_deg}
-    // }, "toScoreZone");
-
 }
 
 /**
@@ -134,6 +111,7 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
+    // simple routine to move forward while pushing a cube into the score zone, then move backwards
     robot::chassis->moveDistance(3_ft);
     subsystems::Intake::getInstance()->setIntakeVelocity(-100);
     pros::delay(3000);
@@ -185,9 +163,8 @@ void initBindings(std::vector<Binding *> & bind_list) {
     bind_list.emplace_back(new Binding(Button(bindings::TOGGLE_TRAY),
         subsystems::Tray::togglePosition, nullptr, nullptr));
 
-   bind_list.emplace_back(new Binding(Button(bindings::PLACE_STACK), commands::handleTaskThing, nullptr, nullptr));
-
-//    bind_list.emplace_back(new Binding(Button(bindings::PLACE_STACK), commands::deployTray, nullptr, nullptr));
+    bind_list.emplace_back(new Binding(Button(bindings::PLACE_STACK),
+        commands::handleTaskThing, nullptr, nullptr));
 
     bind_list.emplace_back(new Binding(Button(bindings::TOGGLE_INTAKE),
         subsystems::Intake::toggleIntake, nullptr, nullptr));
@@ -206,8 +183,9 @@ void initBindings(std::vector<Binding *> & bind_list) {
         subsystems::Intake::getInstance()->intakeMoveManual(0);
     }, nullptr));
 
+    // TODO: THERE ARE NO BINDINGS AVAILABLE FOR THIS AUTO TEST UNLESS WE REMOVE DRIVE_BRAKE_TOGGLE
     // // TODO: Remove this before competition
-    // bind_list.emplace_back(new Binding(Button(okapi::ControllerDigital::Y),
+    // bind_list.emplace_back(new Binding(Button(okapi::ControllerDigital::B),
     //     autonomous, nullptr, nullptr)); // Bind for auto test
     // Note: Auto bind is blocking
 }
