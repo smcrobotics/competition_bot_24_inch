@@ -14,8 +14,8 @@ The robot code uses [OkapiLib](https://okapilib.github.io/OkapiLib/index.html) a
 - Intake mechanism with active withdrawal to allow for easy intake and outtake
 - Auto stacking routine that deploys tray and stacks cubs (up to seven at a time)
 - Debugging info printed to the VEX V5 Brain LCD
-- Side can be specified for the autonomous routines by pressing a button on the V5 brain during runtime (which sets a boolean in the source code).
-- Manual control of intake direction for cube intake.
+- Side can be specified for the autonomous routines by pressing a button on the V5 brain during runtime (which sets a boolean in the source code)
+- Manual control of intake direction for cube intake
 - Manual control of tray angle for deploying collected cubes
 
 ## Help
