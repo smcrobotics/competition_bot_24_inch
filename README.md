@@ -1,23 +1,23 @@
-# robot-code
-SMC Robotics Club 2019 Robot Code - work in progress
+# SMC BigBot 2019-2020
 
-## TODO: Implementation
-* Tune PID constants being passed to AsyncControllerFactory in `tasks.cpp::move_intake_fn`
-* Consider moving stuff in `tasks.cpp::move_intake_fn` into actual autonomous function
-* Finish intake subsystem
+## Overview
+This repository hosts the code for Santa Monica College's large robot (24in^3) for the 2019-2020 VEX Robotics competition season.
 
-## TODO: Housekeeping
-* Change constants in `include/smc/constants/constants.h` to actual values
-* Figure out actual motor position for `robot::INTAKE_DOWN_POS`, `robot::INTAKE_UP_POS`
+![2019-2020 Big Bot](https://github.com/smcrobotics/competition_bot_24_inch/blob/master/big_bot2019-2020.JPG)
 
-## Done
-* Implement general robot code structure ✓
-* Write drive subsystem ✓
-* 
+Club website: https://smcrobotics.github.io
 
-### RESOURCES
-* [Purdue PROS](https://pros.cs.purdue.edu/v5/getting-started/index.html)
-* [implementing PID control](https://www.youtube.com/watch?v=xckRiWAuo4E&list=PLCozfyh08FMgbZWeTbGOMw7o3biDlnvec)
-* [implementing PID control 2](http://www.aura.org.nz/archives/1869)
-* [example robot code](https://github.com/ThePinkAlliance/PizzaBot2019)
-* [Purdue sample code](https://github.com/purduesigbots/forkner-public)
+## How it works
+The robot code uses [OkapiLib](https://okapilib.github.io/OkapiLib/index.html) as a foundation; big bot has autonomous routines for the 2019-2020 VEX Tower Takeover competition and also can be teleoperated (tank drive, but can easily be modified to run arcade).
+
+## Functionality
+- Intake mechanism with active withdrawal to allow for easy intake and outtake
+- Auto stacking routine that deploys tray and stacks cubs (up to seven at a time)
+- Debugging info printed to the VEX V5 Brain LCD
+- Side can be specified for the autonomous routines by pressing a button on the V5 brain during runtime (which sets a boolean in the source code).
+- Manual control of intake direction for cube intake.
+- Manual control of tray angle for deploying collected cubes
+
+## Help
+- Feel free to raise an issue if you have questions about the design or programming (https://github.com/smcrobotics/competition_bot_24_inch/issues/new/choose)
+
